@@ -39,11 +39,29 @@ const sidebarConfig = [
     icon: <Icon icon="fluent:building-shop-20-regular" />,
     isSearch: true,
   },
+  // {
+  //   title: "AMC",
+  //   path: "/amcs",
+  //   icon: <Icon icon="carbon:manage-protection" />,
+  //   isSearch: true,
+  // },
   {
     title: "AMC",
     path: "/amcs",
     icon: <Icon icon="carbon:manage-protection" />,
     isSearch: true,
+    children: [
+      {
+        title: "AMC List",
+        path: "/amcs/list",
+        icon: <Icon icon="majesticons:users-line" />,
+      },
+      {
+        title: "Series Number",
+        path: "/amcs/seriesno",
+        icon: <Icon icon="majesticons:users-line" />,
+      },
+    ],
   },
   {
     title: "orders",

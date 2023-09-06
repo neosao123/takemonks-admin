@@ -5,6 +5,7 @@ import { Suspense, lazy } from "react";
 import DashboardLayout from "src/layouts/dashboard";
 import AuthLayout from "src/layouts/auth";
 import LoadingScreen from "src/components/loadingScreen";
+import SeriesNumber from "src/components/forms/amc/seriesNo";
 // ----------------------------------------------------------------------
 
 const Loadable = (Component) => (props) => {
@@ -54,9 +55,12 @@ export default function Router() {
         { path: "brands/:bid", element: <BrandUpdate /> },
 
         // Amcs Routes address
-        { path: "amcs", element: <Amcs /> },
+        { path: "amcs/list", element: <Amcs /> },
         { path: "amcs/add", element: <AddAmc /> },
-        { path: "amcs/:aid", element: < AmcUpdate /> },
+        { path: "amcs/:aid", element: <AmcUpdate /> },
+
+        //
+        { path: "amcs/seriesno", element: <SeriesNumber /> },
 
         { path: "categories/main-categories", element: <Categories /> },
         { path: "categories/main-categories/add", element: <AddCategory /> },
@@ -127,18 +131,18 @@ const ProductUpdate = Loadable(
 );
 // Brands ----------------------
 const Brands = Loadable(lazy(() => import("src/pages/brands")));
-const AddBrand = Loadable(
-  lazy(() => import("src/pages/brands/addBrand"))
-);
-const BrandUpdate = Loadable(
-  lazy(() => import("src/pages/brands/editBrand"))
-);
-
+const AddBrand = Loadable(lazy(() => import("src/pages/brands/addBrand")));
+const BrandUpdate = Loadable(lazy(() => import("src/pages/brands/editBrand")));
 
 //Amcs --------------------------
 const Amcs = Loadable(lazy(() => import("src/pages/amcs")));
 const AddAmc = Loadable(lazy(() => import("src/pages/amcs/addAmc")));
 const AmcUpdate = Loadable(lazy(() => import("src/pages/amcs/editAmc")));
+
+//
+const SerialNumber = Loadable(
+  lazy(() => import("src/pages/amcs/seriesNumber"))
+);
 
 const Categories = Loadable(lazy(() => import("src/pages/categories")));
 const SubCategories = Loadable(
@@ -148,7 +152,9 @@ const Users = Loadable(lazy(() => import("src/pages/users")));
 const UserProfile = Loadable(lazy(() => import("src/pages/users/profile")));
 const AddUser = Loadable(lazy(() => import("src/pages/users/addUser")));
 const EditUser = Loadable(lazy(() => import("src/pages/users/editUser")));
-const AddProductForUser = Loadable(lazy(() => import("src/pages/users/addProduct")));
+const AddProductForUser = Loadable(
+  lazy(() => import("src/pages/users/addProduct"))
+);
 const AddAmcForUser = Loadable(lazy(() => import("src/pages/users/addAmc")));
 
 const AddCategory = Loadable(

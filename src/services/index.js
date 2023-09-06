@@ -9,7 +9,7 @@ export const getProducts = async (page, search) => {
 export const getAllProducts = async () => {
   const { data } = await http.get(`/admin/products/all`);
   return data;
-}
+};
 export const getFeaturedProducts = async () => {
   const { data: response } = await http.get("/admin/products/featured");
   return response;
@@ -39,11 +39,9 @@ export const getUsers = async (page, search) => {
 
 // Add user field
 export const addUser = async (payload) => {
-  const { data: response } = await http.post(
-    `/admin/users`, payload
-  );
+  const { data: response } = await http.post(`/admin/users`, payload);
   return response;
-}
+};
 export const getUser = async (id) => {
   const { data: response } = await http.get(`/admin/users/${id}`);
   return response;
@@ -251,21 +249,17 @@ export const updateHomeBanners = async (payload) => {
   return data;
 };
 
-
-
 // BRANDS ----------
 export const getBrands = async (page, search) => {
   const { data } = await http.get(
     `/admin/brands?search=${search}&page=${page}`
   );
   return data;
-}
+};
 export const getAllBrands = async () => {
-  const { data } = await http.get(
-    `/admin/brands/all-brands`
-  );
+  const { data } = await http.get(`/admin/brands/all-brands`);
   return data;
-}
+};
 export const newBrand = async (payload) => {
   const { data: response } = await http.post(`/admin/brands`, payload);
   return response;
@@ -283,29 +277,27 @@ export const deleteBrand = async (id) => {
   return data;
 };
 
-
-
 // AMC ----------
 export const getAmcs = async (page, search) => {
   const { data } = await http.get(`/admin/amcs?search=${search}&page=${page}`);
   return data;
-}
+};
 
 export const newAmc = async (payload) => {
   const { data } = await http.post(`/admin/amcs`, payload);
   return data;
-}
+};
 
 export const updateAmcs = async ({ id, ...payload }) => {
   const { data } = await http.put(`/admin/amcs/${id}`, payload);
   return data;
-}
+};
 
 export const getAmc = async (id) => {
   const { data } = await http.get(`/admin/amcs/${id}`);
   return data;
-}
+};
 export const deleteAmc = async (id) => {
   const { data } = await http.delete(`/admin/amcs/${id}`);
   return data;
-}
+};
