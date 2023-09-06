@@ -1,0 +1,21 @@
+{
+  "add-brand": "Add Brand",
+  "brand": "Brand",
+  "description": "Description",
+  "created-at": "Created at",
+  "actions": "Actions",
+  "name": "Name",
+  "brand-name": "Brand Name",
+  "name-is-required": "Brand name is required",
+  "description-is-required": "Description is required",
+  "cover": "Cover",
+  "dashboard": "Dashboard",
+  "brands": "Brands",
+  "create-brand": "Create Brand",
+  "image": "Image",
+  "cover-is-required": "Cover is required",
+  "status": "Status",
+  "status-is-required": "Status is required",
+  "edit-brand": "Edit Brand",
+  "edit": "Edit"
+}
