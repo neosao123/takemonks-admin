@@ -1,69 +1,88 @@
+import { Icon } from "@iconify/react";
+import { LoadingButton } from "@mui/lab";
 import {
-  Box,
-  Button,
   Card,
-  InputLabel,
-  MenuItem,
-  Select,
+  Grid,
   Stack,
+  Select,
   TextField,
-  styled,
+  Skeleton,
+  Typography,
+  FormControl,
+  FormHelperText,
+  Box,
+  MenuItem,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { Form, Formik, FormikProvider } from "formik";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import Grid from "src/theme/overrides/Grid";
-import Typography from "src/theme/overrides/Typography";
 
-export default function SeriesNumber() {
-  //   const { t } = useTranslation("amcs");
+const LabelStyle = styled(Typography)(({ theme }) => ({
+  ...theme.typography.subtitle2,
+  color: theme.palette.text.secondary,
+  marginBottom: theme.spacing(1),
+  span: {
+    fontSize: 12,
+    float: "right",
+    fontWeight: 400,
+  },
+}));
 
-  //   //   const LabelStyle = styled(Typography)(({ theme }) => ({
-  //   //     ...theme.typography.subtitle2,
-  //   //     color: theme.palette.text.secondary,
-  //   //     marginBottom: theme.spacing(1),
-  //   //     span: {
-  //   //       fontSize: 12,
-  //   //       float: "right",
-  //   //       fontWeight: 400,
-  //   //     },
-  //   //   }));
+export default function SeriesNumber({ products }) {
+  const { t } = useTranslation("amcs");
+
+  const handleSubmit = () => {
+    //
+  };
 
   return (
     <Box>
-      <Card>
-        <TextField
-          id="outlined-basic"
-          sx={{ m: 1.5 }}
-          label="Outlined"
-          variant="outlined"
-        />
-        <Button size="large" variant="outlined" sx={{ m: 1.5 }}>
-          Add
-        </Button>
-
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          label="Age"
-          sx={{ m: 1.5 }}
-          style={{ width: "10%" }}
-        >
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
-        </Select>
-      </Card>
-      {/* <Grid container spacing={2}>
-        <Grid item xs={12} md={12}>
-          <Card sx={{ p: 3 }}>
-            <Stack spacing={3}>
-              <div>
-                <InputLabel shrink htmlFor="bootstrap-input"></InputLabel>
-              </div>
-            </Stack>
-          </Card>
-        </Grid>
-      </Grid> */}
+      <FormikProvider value={Formik}>
+        <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={8}>
+              <Card sx={{ p: 3 }}>
+                <Stack spacing={3}>
+                  <div>
+                    <FormControl fullWidth>
+                      <LabelStyle>{t("Serial Number")}</LabelStyle>
+                      <TextField fullWidth sx={{ mb: 3 }} />
+                    </FormControl>
+                  </div>
+                </Stack>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Stack spacing={3}>
+                <Card sx={{ p: 3 }}>
+                  <LoadingButton type="button" variant="outlined" size="small">
+                    {t("bulk add")} <Icon icon="vscode-icons:file-type-excel" />
+                  </LoadingButton>
+                  <FormControl fullWidth>
+                    <LabelStyle>{t("product")}</LabelStyle>
+                    <Select native id="grouped-native-select" sx={{ mb: 3 }}>
+                      {products?.map((product, key) => (
+                        <option key={`pr-${key}`} value={product._id}>
+                          {product.name}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <LoadingButton
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    size="large"
+                  >
+                    {t("add serial number")}
+                  </LoadingButton>
+                </Card>
+              </Stack>
+            </Grid>
+          </Grid>
+        </Form>
+      </FormikProvider>
     </Box>
   );
 }

@@ -5,7 +5,7 @@ import { Suspense, lazy } from "react";
 import DashboardLayout from "src/layouts/dashboard";
 import AuthLayout from "src/layouts/auth";
 import LoadingScreen from "src/components/loadingScreen";
-import SeriesNumber from "src/components/forms/amc/seriesNo";
+import SeriesNo from "src/pages/amcs/seriesNumber";
 // ----------------------------------------------------------------------
 
 const Loadable = (Component) => (props) => {
@@ -60,7 +60,7 @@ export default function Router() {
         { path: "amcs/:aid", element: <AmcUpdate /> },
 
         //
-        { path: "amcs/seriesno", element: <SeriesNumber /> },
+        { path: "amcs/seriesno", element: <SeriesNo /> },
 
         { path: "categories/main-categories", element: <Categories /> },
         { path: "categories/main-categories/add", element: <AddCategory /> },
