@@ -29,7 +29,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-export default function SeriesNumber({ products }) {
+export default function SerialNumberEditForm({ products }) {
   const { t } = useTranslation("amcs");
 
   const handleSubmit = () => {
@@ -44,31 +44,6 @@ export default function SeriesNumber({ products }) {
             <Grid item xs={12} md={6}>
               <Stack spacing={3}>
                 <Card sx={{ p: 3 }}>
-                  <Grid container>
-                    <Grid
-                      item
-                      xs={12}
-                      md={12}
-                      container
-                      justifyContent="flex-end"
-                    >
-                      <LoadingButton
-                        type="button"
-                        variant="outlined"
-                        size="auto"
-                      >
-                        <span>
-                          {t("bulk add")} {"  "}
-                        </span>
-                        <Icon
-                          icon="vscode-icons:file-type-excel"
-                          width="1.2rem"
-                          height="1.2rem"
-                          style={{ marginLeft: ".8rem" }}
-                        />
-                      </LoadingButton>
-                    </Grid>
-                  </Grid>
                   <FormControl fullWidth>
                     <LabelStyle>{t("product")}</LabelStyle>
                     <Select native id="grouped-native-select" sx={{ mb: 3 }}>
@@ -91,7 +66,7 @@ export default function SeriesNumber({ products }) {
                     variant="contained"
                     size="large"
                   >
-                    {t("add serial number")}
+                    {t("edit serial number")}
                   </LoadingButton>
                 </Card>
               </Stack>

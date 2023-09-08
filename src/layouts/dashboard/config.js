@@ -52,13 +52,13 @@ const sidebarConfig = [
     isSearch: true,
     children: [
       {
-        title: "AMC List",
+        title: "AMC",
         path: "/amcs/list",
         icon: <Icon icon="majesticons:users-line" />,
       },
       {
-        title: "Series Number",
-        path: "/amcs/seriesno",
+        title: "Serial Number",
+        path: "/serialno/list",
         icon: <Icon icon="majesticons:users-line" />,
       },
     ],

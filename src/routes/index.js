@@ -5,7 +5,6 @@ import { Suspense, lazy } from "react";
 import DashboardLayout from "src/layouts/dashboard";
 import AuthLayout from "src/layouts/auth";
 import LoadingScreen from "src/components/loadingScreen";
-import SeriesNo from "src/pages/amcs/seriesNumber";
 // ----------------------------------------------------------------------
 
 const Loadable = (Component) => (props) => {
@@ -59,8 +58,10 @@ export default function Router() {
         { path: "amcs/add", element: <AddAmc /> },
         { path: "amcs/:aid", element: <AmcUpdate /> },
 
-        //
-        { path: "amcs/seriesno", element: <SeriesNo /> },
+        // Serial Number
+        { path: "serialno/list", element: <SerialNumber /> },
+        { path: "serialno/add", element: <AddSerialNumber /> },
+        { path: "serialno/edit", element: <EditSerialNumber /> },
 
         { path: "categories/main-categories", element: <Categories /> },
         { path: "categories/main-categories/add", element: <AddCategory /> },
@@ -140,8 +141,12 @@ const AddAmc = Loadable(lazy(() => import("src/pages/amcs/addAmc")));
 const AmcUpdate = Loadable(lazy(() => import("src/pages/amcs/editAmc")));
 
 //
-const SerialNumber = Loadable(
-  lazy(() => import("src/pages/amcs/seriesNumber"))
+const SerialNumber = Loadable(lazy(() => import("src/pages/serialno")));
+const AddSerialNumber = Loadable(
+  lazy(() => import("src/pages/serialno/addSerialNumber"))
+);
+const EditSerialNumber = Loadable(
+  lazy(() => import("src/pages/serialno/editSerialNumber"))
 );
 
 const Categories = Loadable(lazy(() => import("src/pages/categories")));

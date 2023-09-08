@@ -29,7 +29,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-export default function SeriesNumber({ products }) {
+export default function SerialNumberNewForm({ products }) {
   const { t } = useTranslation("amcs");
 
   const handleSubmit = () => {

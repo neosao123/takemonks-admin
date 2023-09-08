@@ -5,8 +5,16 @@ import { useQuery } from "react-query";
 import { HeaderBreadcrumbs, Page, Toolbar } from "src/components";
 import SeriesNumber from "src/components/forms/amc/seriesNo";
 import * as api from "src/services";
+import Table from "src/theme/overrides/Table";
 
-export default function SeriesNo() {
+const TABLE_HEAD = [
+  { id: "Serial Number", label: "serialNumber", alignRight: false, sort: true },
+  { id: "product", label: "product", alignRight: false, sort: true },
+  { id: "createdAt", label: "created-at", alignRight: false, sort: true },
+  { id: "", label: "actions", alignRight: true },
+];
+
+export default function EcommerceSerialNumberList() {
   const { t } = useTranslation("amcs");
 
   const { data, isLoading } = useQuery("products", api.getAllProducts, {
@@ -14,6 +22,10 @@ export default function SeriesNo() {
       toast.error(err.response.data.message || "Something went wrong!");
     },
   });
+
+  const handleClickOpen = () => {
+    //
+  };
 
   return (
     <>
@@ -31,9 +43,20 @@ export default function SeriesNo() {
                 href: "/",
               },
             ]}
+            action={{
+              href: `/serialno/add`,
+              title: t("add Serial Number"),
+            }}
           />
         </Toolbar>
-        <SeriesNumber products={isLoading ? [] : data?.data} />
+        {/* <Table
+          headData={TABLE_HEAD}
+          // data={data}
+          // mobileRow={AmcCard}
+          isLoading={isLoading}
+          // row={AmcRow}
+          handleClickOpen={handleClickOpen}
+        /> */}
       </Page>
     </>
   );
