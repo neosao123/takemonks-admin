@@ -305,3 +305,23 @@ export const newSerialNumber = async (payload) => {
   const { data } = await http.post(`admin/product_key`, payload);
   return data;
 };
+
+export const getSerialNumber = async (pageNo) => {
+  const { data } = await http.get(`/admin/product_key?page=${pageNo}`);
+  return data;
+};
+
+export const deleteSerialNo = async (id) => {
+  const { data } = await http.delete(`/admin/product_key/${id}`);
+  return data;
+};
+
+export const getSerialNoById = async (id) => {
+  const { data } = await http.get(`/admin/product_key/${id}`);
+  return data;
+};
+
+export const updateSerialNo = async (payload, id) => {
+  const { data } = await http.put(`/admin/product_key/${id}`, payload);
+  return data;
+};

@@ -7,3 +7,4 @@ export { default as NewsletterCard } from "./newsletterCard";
 export { default as SubCategoryCard } from "./subCategoryCard";
 export { default as BrandCard } from "./brandCard";
 export { default as AmcCard } from "./amcCard";
+export { default as SerialCard } from "./serialnoCard";

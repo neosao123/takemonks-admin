@@ -28,6 +28,8 @@ export default function CustomTable({ ...props }) {
 
   const Component = row;
   const CardComponent = mobileRow;
+
+  console.log("Component", data);
   return (
     <>
       {!isLoading && data?.data.length === 0 ? (
@@ -56,7 +58,7 @@ export default function CustomTable({ ...props }) {
               </Table>
             </TableContainer>
           </Card>
-          {mobileRow && (
+          {/* {mobileRow && (
             <Box sx={{ display: { sm: "none", xs: "block" } }}>
               {(isLoading ? Array.from(new Array(6)) : data.data).map((row) => (
                 <CardComponent
@@ -67,7 +69,7 @@ export default function CustomTable({ ...props }) {
                 />
               ))}
             </Box>
-          )}
+          )} */}
 
           {!isLoading && !hiddenPagination && (
             <Stack alignItems="flex-end" mt={2} pr={2}>

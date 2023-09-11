@@ -61,7 +61,7 @@ export default function Router() {
         // Serial Number
         { path: "serialno/list", element: <SerialNumber /> },
         { path: "serialno/add", element: <AddSerialNumber /> },
-        { path: "serialno/edit", element: <EditSerialNumber /> },
+        { path: "serialno/edit/:sno", element: <EditSerialNumber /> },
 
         { path: "categories/main-categories", element: <Categories /> },
         { path: "categories/main-categories/add", element: <AddCategory /> },

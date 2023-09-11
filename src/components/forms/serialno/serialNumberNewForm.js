@@ -23,6 +23,7 @@ import { useMutation } from "react-query";
 import { useState } from "react";
 import { useRef } from "react";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -36,10 +37,8 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 }));
 
 export default function SerialNumberNewForm({ products }) {
-  const { t } = useTranslation("amcs");
-
-  const productRef = useRef(null);
-  const [serialNo, setSerialNo] = useState();
+  const { t } = useTranslation("serialno");
+  const navigate = useNavigate();
 
   const { mutate, isLoading } = useMutation("new", api.newSerialNumber, {
     onSuccess: (res) => {

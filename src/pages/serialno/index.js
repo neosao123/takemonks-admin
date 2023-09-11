@@ -1,15 +1,24 @@
-// import { Toolbar } from "@mui/material";
+import { Dialog } from "@mui/material";
 import React from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import { HeaderBreadcrumbs, Page, Toolbar } from "src/components";
-import SeriesNumber from "src/components/forms/amc/seriesNo";
+import { useSearchParams } from "react-router-dom";
+import {
+  HeaderBreadcrumbs,
+  Page,
+  SerialCard,
+  Table,
+  Toolbar,
+} from "src/components";
+import DeleteSerialNoDialog from "src/components/deleteSerialNoDialog";
+import SerialRow from "src/components/table/tableRows/serialnoRow";
 import * as api from "src/services";
-import Table from "src/theme/overrides/Table";
 
 const TABLE_HEAD = [
-  { id: "Serial Number", label: "serialNumber", alignRight: false, sort: true },
   { id: "product", label: "product", alignRight: false, sort: true },
+  { id: "serialno", label: "Serial Number", alignRight: false, sort: true },
+  { id: "isUsed", label: "isUsed", alignRight: false, sort: true },
   { id: "createdAt", label: "created-at", alignRight: false, sort: true },
   { id: "", label: "actions", alignRight: true },
 ];
@@ -17,18 +26,42 @@ const TABLE_HEAD = [
 export default function EcommerceSerialNumberList() {
   const { t } = useTranslation("amcs");
 
-  const { data, isLoading } = useQuery("products", api.getAllProducts, {
-    onError: (err) => {
-      toast.error(err.response.data.message || "Something went wrong!");
-    },
-  });
+  const [searchParams] = useSearchParams();
+  const pageParam = searchParams.get("page");
+  const searchParam = searchParams.get("search");
+  const [open, setOpen] = useState(false);
+  const [apicall, setApicall] = useState(false);
+  const [id, setId] = useState(null);
 
-  const handleClickOpen = () => {
-    //
+  const { data, isLoading } = useQuery(
+    ["serialno", apicall, searchParam, pageParam],
+    () => api.getSerialNumber(+pageParam || 1, searchParam || ""),
+    {
+      onError: (err) =>
+        toast.error(err.response.data.message || "Something went wrong!"),
+    }
+  );
+
+  const handleClickOpen = (props) => () => {
+    setId(props);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
     <>
+      <Dialog onClose={handleClose} open={open}>
+        <DeleteSerialNoDialog
+          onClose={handleClose}
+          id={id}
+          apicall={setApicall}
+          endPoint="deleteSerialNo"
+          type="Serial Number"
+        />
+      </Dialog>
       <Page title={`Series No | ${process.env.REACT_APP_DOMAIN_NAME}`}>
         <Toolbar>
           <HeaderBreadcrumbs
@@ -45,18 +78,18 @@ export default function EcommerceSerialNumberList() {
             ]}
             action={{
               href: `/serialno/add`,
-              title: t("add Serial Number"),
+              title: t("add serial number"),
             }}
           />
         </Toolbar>
-        {/* <Table
+        <Table
           headData={TABLE_HEAD}
-          // data={data}
-          // mobileRow={AmcCard}
+          data={data}
+          mobileRow={SerialCard}
           isLoading={isLoading}
-          // row={AmcRow}
+          row={SerialRow}
           handleClickOpen={handleClickOpen}
-        /> */}
+        />
       </Page>
     </>
   );

@@ -15,15 +15,39 @@ import * as api from "src/services";
 import { useTranslation } from "react-i18next";
 import SerialNumberNewForm from "src/components/forms/serialno/serialNumberNewForm";
 import SerialNumberEditForm from "src/components/forms/serialno/serialNumberEditForm";
+import { useNavigate, useParams } from "react-router";
 
 export default function EditSerialNumber() {
   const { t } = useTranslation("amcs");
 
-  const { data, isLoading } = useQuery("products", api.getAllProducts, {
-    onError: (err) => {
-      toast.error(err.response.data.message || "Something went wrong!");
-    },
-  });
+  const { sno } = useParams();
+  const navigate = useNavigate();
+
+  const { data: products, isLoading } = useQuery(
+    "products",
+    api.getAllProducts,
+    {
+      onError: (err) => {
+        toast.error(err.response.data.message || "Something went wrong!");
+      },
+    }
+  );
+
+  const { data: serialno } = useQuery(
+    ["update-serialno", sno],
+    () => api.getSerialNoById(sno),
+    {
+      enabled: Boolean(sno),
+      retry: false,
+      onError: (error) => {
+        if (!error.response.data.success) {
+          navigate("/404");
+        }
+      },
+    }
+  );
+  const data = serialno?.data;
+  const pdata = products?.data;
   return (
     <Page title={`Edit Serial Number | ${process.env.REACT_APP_DOMAIN_NAME}`}>
       <Toolbar>
@@ -45,7 +69,7 @@ export default function EditSerialNumber() {
           ]}
         />
       </Toolbar>
-      <SerialNumberEditForm products={isLoading ? [] : data?.data} />
+      <SerialNumberEditForm currentSerialNo={data} products={pdata} />
     </Page>
   );
 }

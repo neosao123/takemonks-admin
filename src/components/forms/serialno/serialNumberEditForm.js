@@ -14,9 +14,14 @@ import {
   MenuItem,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Form, Formik, FormikProvider } from "formik";
+import { Form, Formik, FormikProvider, useFormik } from "formik";
 import React from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { useMutation } from "react-query";
+import { useNavigate } from "react-router";
+import * as Yup from "yup";
+import * as api from "src/services";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -29,16 +34,78 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-export default function SerialNumberEditForm({ products }) {
+export default function SerialNumberEditForm({ currentSerialNo, products }) {
   const { t } = useTranslation("amcs");
 
-  const handleSubmit = () => {
-    //
-  };
+  const navigate = useNavigate();
+  console.log("products", products);
+
+  let currentProduct = products?.filter(
+    (data) => data._id === currentSerialNo?.productId?._id
+  );
+  if (currentProduct?.length > 0) {
+    currentProduct = currentProduct[0];
+  } else {
+    currentProduct = null;
+  }
+
+  console.log("currentProduct", currentSerialNo?._id);
+
+  const { mutate, isLoading } = useMutation(
+    ["update-serialno", currentSerialNo?._id],
+    () => api.updateSerialNo,
+    {
+      enabled: Boolean(currentSerialNo?._id),
+      onSuccess: (res) => {
+        toast.success("Serial Number Updated");
+        // navigate("/serialno/list");
+        alert("api called");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    }
+  );
+
+  const editSerialNoSchema = Yup.object().shape({
+    serialNo: Yup.string().required(t("serial-number-is-required")),
+    productId: Yup.string().required(t("product-is-required")),
+  });
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      productId: currentProduct?._id || "",
+      serialNo: currentSerialNo?.productSerialNo || "",
+    },
+    validationSchema: editSerialNoSchema,
+    onSubmit: async (values) => {
+      const payload = {
+        productId: values?.productId,
+        isUsed: false,
+        productSerialNo: values?.serialNo,
+      };
+      console.log(values);
+
+      try {
+        mutate({ payload: payload });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  });
+  const {
+    errors,
+    values,
+    touched,
+    handleSubmit,
+    setFieldValue,
+    getFieldProps,
+  } = formik;
 
   return (
     <Box>
-      <FormikProvider value={Formik}>
+      <FormikProvider value={formik}>
         <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
@@ -46,7 +113,12 @@ export default function SerialNumberEditForm({ products }) {
                 <Card sx={{ p: 3 }}>
                   <FormControl fullWidth>
                     <LabelStyle>{t("product")}</LabelStyle>
-                    <Select native id="grouped-native-select" sx={{ mb: 3 }}>
+                    <Select
+                      native
+                      id="grouped-native-select"
+                      sx={{ mb: 3 }}
+                      {...getFieldProps("productId")}
+                    >
                       {products?.map((product, key) => (
                         <option key={`pr-${key}`} value={product._id}>
                           {product.name}
@@ -57,7 +129,11 @@ export default function SerialNumberEditForm({ products }) {
                   <div>
                     <FormControl fullWidth>
                       <LabelStyle>{t("Serial Number")}</LabelStyle>
-                      <TextField fullWidth sx={{ mb: 3 }} />
+                      <TextField
+                        fullWidth
+                        sx={{ mb: 3 }}
+                        {...getFieldProps("serialNo")}
+                      />
                     </FormControl>
                   </div>
                   <LoadingButton
@@ -65,8 +141,9 @@ export default function SerialNumberEditForm({ products }) {
                     fullWidth
                     variant="contained"
                     size="large"
+                    isLoading={isLoading}
                   >
-                    {t("edit serial number")}
+                    {t("update serial number")}
                   </LoadingButton>
                 </Card>
               </Stack>
