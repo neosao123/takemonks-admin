@@ -301,3 +301,7 @@ export const deleteAmc = async (id) => {
   const { data } = await http.delete(`/admin/amcs/${id}`);
   return data;
 };
+export const newSerialNumber = async (payload) => {
+  const { data } = await http.post(`admin/product_key`, payload);
+  return data;
+};

@@ -1,3 +1,4 @@
+import * as Yup from "yup";
 import { Icon } from "@iconify/react";
 import { LoadingButton } from "@mui/lab";
 import {
@@ -14,9 +15,14 @@ import {
   MenuItem,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Form, Formik, FormikProvider } from "formik";
+import * as api from "src/services";
+import { Form, Formik, FormikProvider, useFormik } from "formik";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useMutation } from "react-query";
+import { useState } from "react";
+import { useRef } from "react";
+import { toast } from "react-hot-toast";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -32,13 +38,59 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 export default function SerialNumberNewForm({ products }) {
   const { t } = useTranslation("amcs");
 
-  const handleSubmit = () => {
-    //
-  };
+  const productRef = useRef(null);
+  const [serialNo, setSerialNo] = useState();
+
+  const { mutate, isLoading } = useMutation("new", api.newSerialNumber, {
+    onSuccess: (res) => {
+      toast.success("New Serial Number Added");
+      navigate("/serialno/list");
+    },
+    onError: (error) => {
+      console.log("error", error);
+      toast.error(error.response?.data?.data);
+    },
+  });
+
+  const newSerialNoSchema = Yup.object().shape({
+    serialNo: Yup.string().required(t("serial-number-is-required")),
+    productId: Yup.string().required(t("product-is-required")),
+  });
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      productId: products[0]?._id,
+      serialNo: "",
+    },
+    validationSchema: newSerialNoSchema,
+    onSubmit: async (values) => {
+      const payload = {
+        productId: values?.productId,
+        isUsed: false,
+        productSerialNo: values?.serialNo,
+      };
+      console.log(values);
+
+      try {
+        mutate(payload);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  });
+  const {
+    errors,
+    values,
+    touched,
+    handleSubmit,
+    setFieldValue,
+    getFieldProps,
+  } = formik;
 
   return (
     <Box>
-      <FormikProvider value={Formik}>
+      <FormikProvider value={formik}>
         <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
@@ -71,7 +123,12 @@ export default function SerialNumberNewForm({ products }) {
                   </Grid>
                   <FormControl fullWidth>
                     <LabelStyle>{t("product")}</LabelStyle>
-                    <Select native id="grouped-native-select" sx={{ mb: 3 }}>
+                    <Select
+                      native
+                      id="grouped-native-select"
+                      sx={{ mb: 3 }}
+                      {...getFieldProps("productId")}
+                    >
                       {products?.map((product, key) => (
                         <option key={`pr-${key}`} value={product._id}>
                           {product.name}
@@ -82,7 +139,11 @@ export default function SerialNumberNewForm({ products }) {
                   <div>
                     <FormControl fullWidth>
                       <LabelStyle>{t("Serial Number")}</LabelStyle>
-                      <TextField fullWidth sx={{ mb: 3 }} />
+                      <TextField
+                        fullWidth
+                        sx={{ mb: 3 }}
+                        {...getFieldProps("serialNo")}
+                      />
                     </FormControl>
                   </div>
                   <LoadingButton
@@ -90,6 +151,7 @@ export default function SerialNumberNewForm({ products }) {
                     fullWidth
                     variant="contained"
                     size="large"
+                    isLoading={isLoading}
                   >
                     {t("add serial number")}
                   </LoadingButton>
