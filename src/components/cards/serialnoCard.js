@@ -85,29 +85,44 @@ export default function AgendaCodeMobile({ item, isLoading, handleClickOpen }) {
   return (
     <RootStyle
       sx={{
-        borderLeft: `6px solid ${
-          isLoading
-            ? theme.palette.divider
-            : theme.palette[
-                item?.status.toLowerCase() === "active" ? "success" : "error"
-              ].main
-        }`,
+        borderLeft: `6px solid ${theme.palette.divider}`,
       }}
       key={uniqueId()}
     >
       <Grid container alignItems="center">
         <Grid item md={8} sm={8} xs={8}>
           <Stack spacing={0.5}>
+            {isLoading ? (
+              <Skeleton
+                variant="rectangular"
+                width={36}
+                height={36}
+                sx={{ borderRadius: 1 }}
+              />
+            ) : Boolean(item?.productId?.cover) ? (
+              <ThumbImgStyle alt={item?.name} src={item?.productId?.cover} />
+            ) : (
+              <Avatar>{item.name.slice(0, 1)}</Avatar>
+            )}
             <Link
               className="name"
               component={RouterLink}
-              to={`/brands/${item?._id}`}
+              to={`/serialno/edit/${item?._id}`}
               underline="none"
               noWrap
             >
-              {isLoading ? <Skeleton variant="text" /> : capitalize("")}
+              {isLoading ? (
+                <Skeleton variant="text" />
+              ) : (
+                capitalize(item?.productId?.name)
+              )}
             </Link>
             <Stack flexDirection="row" alignItems="center" gap={"6px"}>
+              {isLoading ? (
+                <Skeleton variant="text" width={50} />
+              ) : (
+                capitalize(item?.productId?.name)
+              )}
               {isLoading ? (
                 <Skeleton variant="circular" width={20} height={20} />
               ) : (
@@ -131,11 +146,8 @@ export default function AgendaCodeMobile({ item, isLoading, handleClickOpen }) {
             ) : (
               <Label
                 variant={theme.palette.mode === "light" ? "ghost" : "filled"}
-                color={
-                  item?.status?.toLowerCase() === "active" ? "success" : "error"
-                }
               >
-                {capitalize(item?.isUsed)}
+                {capitalize(item?.isUsed === true ? "TRUE" : "FALSE")}
               </Label>
             )}
             {isLoading ? (

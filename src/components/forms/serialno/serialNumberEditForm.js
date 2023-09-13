@@ -52,14 +52,14 @@ export default function SerialNumberEditForm({ currentSerialNo, products }) {
   console.log("currentProduct", currentSerialNo?._id);
 
   const { mutate, isLoading } = useMutation(
-    ["update-serialno", currentSerialNo?._id],
-    () => api.updateSerialNo,
+    "update-serialno",
+    api.updateSerialNo,
     {
       enabled: Boolean(currentSerialNo?._id),
       onSuccess: (res) => {
         toast.success("Serial Number Updated");
         // navigate("/serialno/list");
-        alert("api called");
+        // alert("api called");
       },
       onError: (error) => {
         toast.error(error.message);
@@ -81,14 +81,13 @@ export default function SerialNumberEditForm({ currentSerialNo, products }) {
     validationSchema: editSerialNoSchema,
     onSubmit: async (values) => {
       const payload = {
-        productId: values?.productId,
         isUsed: false,
         productSerialNo: values?.serialNo,
       };
       console.log(values);
 
       try {
-        mutate({ payload: payload });
+        mutate({ id: currentSerialNo?._id, ...payload });
       } catch (error) {
         console.error(error);
       }
@@ -118,6 +117,7 @@ export default function SerialNumberEditForm({ currentSerialNo, products }) {
                       id="grouped-native-select"
                       sx={{ mb: 3 }}
                       {...getFieldProps("productId")}
+                      disabled
                     >
                       {products?.map((product, key) => (
                         <option key={`pr-${key}`} value={product._id}>

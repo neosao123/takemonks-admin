@@ -107,6 +107,9 @@ export default function SerialNumberNewForm({ products }) {
                         type="button"
                         variant="outlined"
                         size="auto"
+                        onClick={() => {
+                          navigate("/serialno/bulk-add");
+                        }}
                       >
                         <span>
                           {t("bulk add")} {"  "}

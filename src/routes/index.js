@@ -62,6 +62,7 @@ export default function Router() {
         { path: "serialno/list", element: <SerialNumber /> },
         { path: "serialno/add", element: <AddSerialNumber /> },
         { path: "serialno/edit/:sno", element: <EditSerialNumber /> },
+        { path: "serialno/bulk-add", element: <BulkAddSerialNumber /> },
 
         { path: "categories/main-categories", element: <Categories /> },
         { path: "categories/main-categories/add", element: <AddCategory /> },
@@ -147,6 +148,9 @@ const AddSerialNumber = Loadable(
 );
 const EditSerialNumber = Loadable(
   lazy(() => import("src/pages/serialno/editSerialNumber"))
+);
+const BulkAddSerialNumber = Loadable(
+  lazy(() => import("src/pages/serialno/bulkAddSerialNumber"))
 );
 
 const Categories = Loadable(lazy(() => import("src/pages/categories")));

@@ -321,7 +321,12 @@ export const getSerialNoById = async (id) => {
   return data;
 };
 
-export const updateSerialNo = async (payload, id) => {
+export const updateSerialNo = async ({ id, ...payload }) => {
   const { data } = await http.put(`/admin/product_key/${id}`, payload);
+  return data;
+};
+
+export const bulkAddSerialNo = async (payload) => {
+  const { data } = await http.post(`admin/product_key`, payload);
   return data;
 };
