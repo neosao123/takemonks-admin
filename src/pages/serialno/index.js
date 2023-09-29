@@ -34,8 +34,8 @@ export default function EcommerceSerialNumberList() {
   const [id, setId] = useState(null);
 
   const { data, isLoading } = useQuery(
-    ["serialno", apicall, searchParam, pageParam],
-    () => api.getSerialNumber(+pageParam || 1, searchParam || ""),
+    ["serialno", apicall, pageParam],
+    () => api.getSerialNumber(+pageParam || 1),
     {
       onError: (err) =>
         toast.error(err.response.data.message || "Something went wrong!"),

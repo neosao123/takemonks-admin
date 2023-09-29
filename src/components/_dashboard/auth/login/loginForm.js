@@ -32,7 +32,7 @@ import * as api from "src/services";
 // jwt
 import { jwtDecode } from "src/utils/jwt";
 import { useDispatch } from "react-redux";
-import { setLogin } from "src/redux/slices/settings";
+import { setCartItems, setLogin } from "src/redux/slices/settings";
 // ----------------------------------------------------------------------
 export default function LoginForm() {
   const { t } = useTranslation("login");
@@ -46,6 +46,7 @@ export default function LoginForm() {
       window.localStorage.setItem("token", data?.token);
       toast.success("Login success");
       dispatch(setLogin(user));
+      dispatch(setCartItems([]));
       setloading(false);
       navigate("/dashboard");
     },

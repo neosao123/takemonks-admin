@@ -66,27 +66,6 @@ export default function SerialNumberBulkAddForm({ products }) {
     },
   });
 
-  const handleAdd = () => {
-    let arr = [];
-    excelData?.map((data) => {
-      arr.push({
-        productId: data?.[0],
-        isUsed: false,
-        productSerialNo: data?.[1],
-      });
-    });
-
-    const payload = {
-      productSerialNumber: arr,
-    };
-
-    try {
-      mutate(payload);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
 
@@ -103,65 +82,127 @@ export default function SerialNumberBulkAddForm({ products }) {
     console.log("excelData", excelData);
   }, [excelData]);
 
+  const editSerialNoSchema = Yup.object().shape({
+    productId: Yup.string().required(t("product-is-required")),
+  });
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      productId: products[0]?._id,
+    },
+    validationSchema: editSerialNoSchema,
+    onSubmit: async (values) => {
+      let arr = [];
+      excelData?.map((data) => {
+        arr.push({
+          productId: values?.productId,
+          isUsed: false,
+          productSerialNo: data?.[0],
+        });
+      });
+
+      const payload = {
+        productSerialNumber: arr,
+      };
+
+      try {
+        mutate(payload);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  });
+  const {
+    errors,
+    values,
+    touched,
+    handleSubmit,
+    setFieldValue,
+    getFieldProps,
+  } = formik;
+
   return (
     <Box>
-      {/* <FormikProvider> */}
-      {/* <Form noValidate autoComplete="off"> */}
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <Stack spacing={3}>
-            <Card sx={{ p: 3 }}>
-              <FormControl fullWidth>
-                <LabelStyle>{t("Product")}</LabelStyle>
-                <TextField
-                  type="file"
-                  InputLabelProps={{ shrink: true }}
-                  inputProps={{ accept: ".xls, .xlsx" }}
-                  onChange={handleFileUpload}
-                  sx={{ mb: 3 }}
-                />
-              </FormControl>
-              <div>
-                <Grid container spacing={3} sx={{ mb: 3 }}>
-                  {excelData.length > 0 ? (
-                    <>
-                      <Grid item xs={12} md={6}>
-                        <FormControl fullWidth>
-                          {excelData?.map((cell) => {
-                            return <LabelStyle>{cell?.[0]}</LabelStyle>;
-                          })}
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <FormControl fullWidth>
-                          {excelData?.map((cell) => {
-                            return <LabelStyle>{cell?.[1]}</LabelStyle>;
-                          })}
-                        </FormControl>
-                      </Grid>
-                    </>
-                  ) : (
-                    <Grid item xs={12} md={12}>
-                      No Data Found
+      <FormikProvider value={formik}>
+        <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <Stack spacing={3}>
+                <Card sx={{ p: 3 }}>
+                  <FormControl fullWidth>
+                    <LabelStyle>{t("Product")}</LabelStyle>
+                    <Select
+                      native
+                      id="grouped-native-select"
+                      sx={{ mb: 3 }}
+                      {...getFieldProps("productId")}
+                    >
+                      {products?.map((product, key) => (
+                        <option key={`pr-${key}`} value={product._id}>
+                          {product.name}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl fullWidth>
+                    <LabelStyle>{t("Multiple Serial Number")}</LabelStyle>
+                    <LabelStyle>
+                      <small>
+                        {t(
+                          "Excel file only contains serial number in first column"
+                        )}
+                      </small>
+                    </LabelStyle>
+                    <TextField
+                      type="file"
+                      InputLabelProps={{ shrink: true }}
+                      inputProps={{ accept: ".xls, .xlsx" }}
+                      onChange={handleFileUpload}
+                      sx={{ mb: 3 }}
+                    />
+                  </FormControl>
+                  <div>
+                    <Grid container spacing={3} sx={{ mb: 3 }}>
+                      {excelData.length > 0 ? (
+                        <>
+                          <Grid item xs={12} md={6}>
+                            <FormControl fullWidth>
+                              {excelData?.map((cell) => {
+                                return <LabelStyle>{cell?.[0]}</LabelStyle>;
+                              })}
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={12} md={6}>
+                            <FormControl fullWidth>
+                              {excelData?.map((cell) => {
+                                return <LabelStyle>{cell?.[1]}</LabelStyle>;
+                              })}
+                            </FormControl>
+                          </Grid>
+                        </>
+                      ) : (
+                        <Grid item xs={12} md={12}>
+                          No Data Found
+                        </Grid>
+                      )}
                     </Grid>
-                  )}
-                </Grid>
-              </div>
-              <LoadingButton
-                type="submit"
-                fullWidth
-                variant="contained"
-                size="large"
-                onClick={handleAdd}
-              >
-                {t("add serial number")}
-              </LoadingButton>
-            </Card>
-          </Stack>
-        </Grid>
-      </Grid>
-      {/* </Form> */}
-      {/* </FormikProvider> */}
+                  </div>
+                  <LoadingButton
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    size="large"
+                    isLoading={isLoading}
+                  >
+                    {t("add serial number")}
+                  </LoadingButton>
+                </Card>
+              </Stack>
+            </Grid>
+          </Grid>
+        </Form>
+      </FormikProvider>
     </Box>
   );
 }

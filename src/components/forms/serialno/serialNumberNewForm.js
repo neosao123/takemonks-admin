@@ -65,11 +65,15 @@ export default function SerialNumberNewForm({ products }) {
     validationSchema: newSerialNoSchema,
     onSubmit: async (values) => {
       const payload = {
-        productId: values?.productId,
-        isUsed: false,
-        productSerialNo: values?.serialNo,
+        productSerialNumber: [
+          {
+            productId: values?.productId,
+            isUsed: false,
+            productSerialNo: values?.serialNo,
+          },
+        ],
       };
-      console.log(values);
+      // console.log(values);
 
       try {
         mutate(payload);

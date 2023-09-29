@@ -12,7 +12,7 @@ const initialState = {
   mode: "light",
   language: "en",
   isInitialized: false,
-  cartItems: false
+  cartItems: [],
 };
 
 const slice = createSlice({
@@ -49,8 +49,8 @@ const slice = createSlice({
       state.language = action.payload;
     },
     setCartItems(state, action) {
-      state.cartItems = action.payload
-    }
+      state.cartItems = action.payload;
+    },
   },
 });
 
@@ -66,7 +66,7 @@ export const {
   setUnitRate,
   setInitialize,
   setThemeMode,
-  setCartItems
+  setCartItems,
 } = slice.actions;
 
 // ----------------------------------------------------------------------

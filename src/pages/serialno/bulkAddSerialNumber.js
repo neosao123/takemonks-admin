@@ -19,7 +19,11 @@ import SerialNumberBulkAddForm from "src/components/forms/serialno/serialNumberB
 
 export default function BulkAddSerialNumber() {
   const { t } = useTranslation("amcs");
-
+  const { data, isLoading } = useQuery("products", api.getAllProducts, {
+    onError: (err) => {
+      toast.error(err.response.data.message || "Something went wrong!");
+    },
+  });
   return (
     <Page title={`Add Serial Number | ${process.env.REACT_APP_DOMAIN_NAME}`}>
       <Toolbar>
@@ -41,7 +45,7 @@ export default function BulkAddSerialNumber() {
           ]}
         />
       </Toolbar>
-      <SerialNumberBulkAddForm />
+      <SerialNumberBulkAddForm products={isLoading ? [] : data?.data} />
     </Page>
   );
 }

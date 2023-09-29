@@ -58,7 +58,7 @@ export default function SerialNumberEditForm({ currentSerialNo, products }) {
       enabled: Boolean(currentSerialNo?._id),
       onSuccess: (res) => {
         toast.success("Serial Number Updated");
-        // navigate("/serialno/list");
+        navigate("/serialno/list");
         // alert("api called");
       },
       onError: (error) => {

@@ -306,8 +306,8 @@ export const newSerialNumber = async (payload) => {
   return data;
 };
 
-export const getSerialNumber = async (pageNo) => {
-  const { data } = await http.get(`/admin/product_key?page=${pageNo}`);
+export const getSerialNumber = async (page) => {
+  const { data } = await http.get(`/admin/product_key?page=${page}`);
   return data;
 };
 
