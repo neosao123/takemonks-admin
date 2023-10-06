@@ -39,6 +39,12 @@ const sidebarConfig = [
     icon: <Icon icon="fluent:building-shop-20-regular" />,
     isSearch: true,
   },
+  {
+    title: "customers",
+    path: "/customers",
+    icon: <Icon icon="fluent:building-shop-20-regular" />,
+    isSearch: true,
+  },
   // {
   //   title: "AMC",
   //   path: "/amcs",

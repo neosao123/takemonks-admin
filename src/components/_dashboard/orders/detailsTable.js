@@ -44,7 +44,7 @@ export default function ItemsTable({ data, isLoading, currency }) {
                 {row ? (
                   <Box
                     sx={{
-                      py: 2,
+                      py: 1,
                       display: "flex",
                       alignItems: "center",
                     }}
@@ -58,7 +58,7 @@ export default function ItemsTable({ data, isLoading, currency }) {
                   <Stack direction="row" spacing={2} alignItems="center">
                     <Skeleton variant="rect" width={64} height={64} />
                     <Skeleton variant="text" width={100} />
-                  </Stack>
+                  </Stack>  
                 )}
               </TableCell>
               <TableCell>

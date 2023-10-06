@@ -130,113 +130,114 @@ export default function OrderDetail() {
           <Divider />
           <OrderDetails data={data} isLoading={isLoading} />
         </CardContent>
-      </Card>
-      <Card sx={{ mt: 1 }}>
-        {isLoading ? (
-          <Skeleton variant="text" width={100} sx={{ m: 2 }} />
-        ) : (
-          <Typography variant="h5" sx={{ p: 2 }}>
-            {items?.length} {items?.length > 1 ? t("items") : t("item")}
-          </Typography>
-        )}
-        <DetailsTable
-          data={items}
-          isLoading={isLoading}
-          currency={data?.currency}
-        />
-        <Divider />
-        <Table>
-          <TableBody>
-            <TableRow
-              sx={{
-                "& .MuiTableCell-root": {
-                  bgcolor: (theme) => theme.palette.background.neutral,
-                },
-              }}
-            >
-              <TableCell colSpan={4}></TableCell>
-              <TableCell align="right">
-                {isLoading ? (
-                  <Skeleton
-                    variant="text"
-                    sx={{ float: "right" }}
-                    width={100}
-                  />
-                ) : (
-                  <strong>{t("subtotal")}</strong>
-                )}
-              </TableCell>
-              <TableCell align="right">
-                {isLoading ? (
-                  <Skeleton
-                    variant="text"
-                    sx={{ float: "right" }}
-                    width={100}
-                  />
-                ) : (
-                  <strong>
-                    {data?.currency} {data?.subTotal}
-                  </strong>
-                )}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell colSpan={4}></TableCell>
-              <TableCell align="right">
-                {isLoading ? (
-                  <Skeleton
-                    variant="text"
-                    sx={{ float: "right" }}
-                    width={100}
-                  />
-                ) : (
-                  <strong>{t("shipping-fee")}</strong>
-                )}
-              </TableCell>
-              <TableCell align="right">
-                {isLoading ? (
-                  <Skeleton
-                    variant="text"
-                    sx={{ float: "right" }}
-                    width={100}
-                  />
-                ) : (
-                  <strong>
-                    {data?.currency} {data?.shipping}
-                  </strong>
-                )}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell colSpan={4}></TableCell>
-              <TableCell align="right">
-                {isLoading ? (
-                  <Skeleton
-                    variant="text"
-                    sx={{ float: "right" }}
-                    width={100}
-                  />
-                ) : (
-                  <strong>{t("total")}</strong>
-                )}
-              </TableCell>
-              <TableCell align="right">
-                {isLoading ? (
-                  <Skeleton
-                    variant="text"
-                    sx={{ float: "right" }}
-                    width={100}
-                  />
-                ) : (
-                  <strong>
-                    {" "}
-                    {data?.currency} {data?.total}
-                  </strong>
-                )}
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+
+        {/* <Card sx={{ mt: 1 }}> */}
+          {isLoading ? (
+            <Skeleton variant="text" width={100} sx={{ m: 2 }} />
+          ) : (
+            <Typography variant="h5" sx={{ p: 2 }}>
+              {items?.length > 1 ? t("items") : t("item")} {items?.length}
+            </Typography>
+          )}
+          <DetailsTable
+            data={items}
+            isLoading={isLoading}
+            currency={data?.currency}
+          />
+          <Divider />
+          <Table>
+            <TableBody>
+              <TableRow
+                sx={{
+                  "& .MuiTableCell-root": {
+                    bgcolor: (theme) => theme.palette.background.neutral,
+                  },
+                }}
+              >
+                <TableCell colSpan={4}></TableCell>
+                <TableCell align="right">
+                  {isLoading ? (
+                    <Skeleton
+                      variant="text"
+                      sx={{ float: "right" }}
+                      width={100}
+                    />
+                  ) : (
+                    <strong>{t("subtotal")}</strong>
+                  )}
+                </TableCell>
+                <TableCell align="right">
+                  {isLoading ? (
+                    <Skeleton
+                      variant="text"
+                      sx={{ float: "right" }}
+                      width={100}
+                    />
+                  ) : (
+                    <strong>
+                      {data?.currency} {data?.subTotal}
+                    </strong>
+                  )}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell colSpan={4}></TableCell>
+                <TableCell align="right">
+                  {isLoading ? (
+                    <Skeleton
+                      variant="text"
+                      sx={{ float: "right" }}
+                      width={100}
+                    />
+                  ) : (
+                    <strong>{t("shipping-fee")}</strong>
+                  )}
+                </TableCell>
+                <TableCell align="right">
+                  {isLoading ? (
+                    <Skeleton
+                      variant="text"
+                      sx={{ float: "right" }}
+                      width={100}
+                    />
+                  ) : (
+                    <strong>
+                      {data?.currency} {data?.shipping}
+                    </strong>
+                  )}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell colSpan={4}></TableCell>
+                <TableCell align="right">
+                  {isLoading ? (
+                    <Skeleton
+                      variant="text"
+                      sx={{ float: "right" }}
+                      width={100}
+                    />
+                  ) : (
+                    <strong>{t("total")}</strong>
+                  )}
+                </TableCell>
+                <TableCell align="right">
+                  {isLoading ? (
+                    <Skeleton
+                      variant="text"
+                      sx={{ float: "right" }}
+                      width={100}
+                    />
+                  ) : (
+                    <strong>
+                      {" "}
+                      {data?.currency} {data?.total}
+                    </strong>
+                  )}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        {/* </Card> */}
       </Card>
     </Page>
   );
