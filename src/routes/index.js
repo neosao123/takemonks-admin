@@ -93,6 +93,12 @@ export default function Router() {
           path: "settings/application/home-banners/edit",
           element: <EditBanners />,
         },
+
+        // customers
+
+        { path: "/customers", element: <CustomersList /> },
+        { path: "/customers/add", element: <AddCustomer /> },
+        { path: "/customers/:id", element: <CustomerProfile /> },
       ],
     },
     {
@@ -204,3 +210,8 @@ const ResetPassword = Loadable(
 const Login = Loadable(lazy(() => import("src/pages/auth/login")));
 const Newsletter = Loadable(lazy(() => import("src/pages/newsletter")));
 const Register = Loadable(lazy(() => import("src/pages/auth/register")));
+
+//customers 
+const CustomersList = Loadable(lazy(() => import("src/pages/customers")));
+const AddCustomer = Loadable(lazy(() => import("src/pages/customers/addCustomer")));
+const CustomerProfile = Loadable(lazy(() => import("src/pages/customers/profile")));

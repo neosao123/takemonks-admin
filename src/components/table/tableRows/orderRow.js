@@ -54,7 +54,7 @@ export default function OrderRow({ isLoading, row, isUser }) {
             <ThumbImgStyle
               alt={row.items[0].fullName}
               src={row.items[0].cover}
-            />
+            /> 
           ) : (
             <Avatar> {row.user.fullName} </Avatar>
           )}{" "}
@@ -65,7 +65,7 @@ export default function OrderRow({ isLoading, row, isUser }) {
             ) : !isUser ? (
               row.user.fullName
             ) : (
-              row.items[0].name
+              row._id
             )}{" "}
           </Typography>{" "}
         </Box>{" "}

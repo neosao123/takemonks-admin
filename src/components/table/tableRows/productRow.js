@@ -43,6 +43,7 @@ export default function OrderRow({ isLoading, row, handleClickOpen, mutate }) {
   const navigate = useNavigate();
   const { i18n } = useTranslation();
   const { language } = i18n;
+
   return (
     <TableRow hover key={Math.random()}>
       <TableCell
@@ -170,7 +171,7 @@ export default function OrderRow({ isLoading, row, handleClickOpen, mutate }) {
           <Stack direction="row" justifyContent="flex-end">
             <Link
               target="_blank"
-              href={`https://e-cosmetics.vercel.app/products/${paramCase(
+              href={`${process.env.REACT_APP_BASE_URL}/products/${paramCase(
                 row?.name
               )}`}
             >

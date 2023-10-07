@@ -42,7 +42,7 @@ const sidebarConfig = [
   {
     title: "customers",
     path: "/customers",
-    icon: <Icon icon="fluent:building-shop-20-regular" />,
+    icon: <Icon icon="ic:baseline-account-circle" />,
     isSearch: true,
   },
   // {
