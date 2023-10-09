@@ -17,7 +17,7 @@ const settingsPersistConfig = {
   key: "user",
   storage,
   keyPrefix: "redux-",
-  whitelist: ["currency", "symbol", "mode", "language"],
+  whitelist: ["currency", "symbol", "mode", "language","cartItems"],
 };
 
 const rootReducer = combineReducers({

@@ -19,9 +19,8 @@ import { UploadSingleFile } from "src/components";
 import { useState } from "react";
 import axios from "axios";
 import { Pagination } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setCartItems, setCount } from "src/redux/slices/settings";
-import { rootReducer } from "src/redux/rootReducer";
 // ----------------------------------------------------------------------
 
 
@@ -71,16 +70,12 @@ export default function AddProductForm({
     const [apicall, setApicall] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [changeName, setChangeName] = useState("Add to cart");
-    const [cartItems, setcartItems] = useState([]);
+    const [cartItems, setCartItems] = useState([]);
     const { data, isLoading: loadingList } = useQuery(
         ["product", apicall, currentPage, searchParam],
         () => api.getProducts(currentPage, search || "")
     );
 
-    const cartdata = useSelector((state) => {
-        return state.settings.cartItems
-    })
-    console.log("CART:", cartdata)
     const { mutate, isLoading } = useMutation("new", api.addUser, {
         onSuccess: () => {
             toast.success("New User Added");
@@ -121,20 +116,46 @@ export default function AddProductForm({
 
 
     const addToCart = (e, data) => {
-        if (cartdata.some(obj => obj._id === data._id)) {
-            const new_data = cartdata.filter((el) => {
-                if (el._id !== data._id) {
-                    return el;
+        if (data.incart === true) {
+            const updatedProducts = cartItems.map((p) => {
+                if (p === data) {
+                    p.incart = false
                 }
+                return p;
             })
-            dispatch(setCartItems(new_data))
-        }
-        else {
-            dispatch(setCartItems([...cartdata, data]))
+            const removedProducts = updatedProducts.filter((p) => p !== data);
+            setCartItems(removedProducts);
+            // dispatch(setCartItems("Removed"));
+            toast.success("Item Removed from cart");
+
+        } else {
+            data.incart = true;
+            setCartItems((prevCartItems) => [...prevCartItems, data]);
+            toast.success("Item Added to cart");
         }
     }
 
-
+    // const addToCart = (product) => {
+    //     if (product.inCart) {
+    //         const updatedProducts = products.map((p) => {
+    //             if (p === product) {
+    //                 // Decrease quantity or remove the item
+    //                 // Update the inCart property accordingly
+    //                 if (p.quantity > 1) {
+    //                     p.quantity -= 1;
+    //                 } else {
+    //                     p.inCart = false;
+    //                 }
+    //             }
+    //             return p;
+    //         });
+    //         setProducts(updatedProducts);
+    //     } else {
+    //         product.inCart = true;
+    //         setProducts((prevProducts) => [...prevProducts]);
+    //     }
+    // };
+    console.log({ cartItems });
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
@@ -192,10 +213,10 @@ export default function AddProductForm({
                 </Form> */}
             {/* Make price and the value of price side by side */}
             <FormikProvider value={formik}>
-                <Grid container spacing={1}>
+                <Grid container spacing={2}>
                     {data?.data?.map((data, index) => (
                         <Grid item xs={12} sm={6} md={3} key={index}>
-                            <Card sx={{ padding: "10px" }}>
+                            <Card sx={{ maxWidth: 345, maxHeight: 400, height: 400 }}>
                                 <CardMedia title={data.name} style={{ textAlign: "center" }}>
                                     <img src={data.cover} style={{ textAlign: "center", height: "200px", width: "200px" }} />
                                 </CardMedia>
@@ -221,9 +242,7 @@ export default function AddProductForm({
                                     </Box>
                                 </CardContent>
                                 <CardActions sx={{ justifyContent: 'center' }}>
-                                    <Button variant="contained" size="small" onClick={(e) => addToCart(e, data)}>
-                                        {cartdata.some((el) => el._id === data._id) ? "Added to cart" : "Add to cart"}
-                                    </Button>
+                                    <Button variant="contained" size="small" onClick={(e) => addToCart(e, data)}>{data.incart ? "Added to cart" : "Add to cart"}</Button>
                                 </CardActions>
                             </Card>
                         </Grid>

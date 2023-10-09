@@ -94,7 +94,7 @@ export default function OrderDetail() {
           action={
             <>
               <Box mb={{ sm: 0, xs: 2 }}>
-                <LoadingButton
+                {/* <LoadingButton
                   variant="contained"
                   startIcon={<DeleteOutlineRoundedIcon />}
                   onClick={() => mutate(data?._id)}
@@ -102,7 +102,7 @@ export default function OrderDetail() {
                   loadingPosition="start"
                 >
                   {t("delete")}
-                </LoadingButton>
+                </LoadingButton> */}
                 <SelectOrderStatus data={data} />
               </Box>
             </>

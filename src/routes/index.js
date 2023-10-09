@@ -95,10 +95,14 @@ export default function Router() {
         },
 
         // customers
-
         { path: "/customers", element: <CustomersList /> },
         { path: "/customers/add", element: <AddCustomer /> },
         { path: "/customers/:id", element: <CustomerProfile /> },
+        { path: "/customers/:id/addproduct", element: <AddProductForCustomer /> },
+
+
+        //cart
+        { path: "/cart", element: <Cart /> }
       ],
     },
     {
@@ -215,3 +219,7 @@ const Register = Loadable(lazy(() => import("src/pages/auth/register")));
 const CustomersList = Loadable(lazy(() => import("src/pages/customers")));
 const AddCustomer = Loadable(lazy(() => import("src/pages/customers/addCustomer")));
 const CustomerProfile = Loadable(lazy(() => import("src/pages/customers/profile")));
+const AddProductForCustomer = Loadable(lazy(() => import("src/pages/customers/addProduct")));
+
+//cart
+const Cart = Loadable(lazy(() => import("src/pages/cart")))

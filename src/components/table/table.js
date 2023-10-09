@@ -26,6 +26,8 @@ export default function CustomTable({ ...props }) {
     ...rest
   } = props;
 
+  console.log("data", data)
+
   const Component = row;
   const CardComponent = mobileRow;
   return (

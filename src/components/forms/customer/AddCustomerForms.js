@@ -36,9 +36,10 @@ export default function AddUserForm() {
     const { mutate, isLoading } = useMutation("new", api.addUser, {
         onSuccess: () => {
             toast.success("New User Added");
-            navigate("/users");
+            navigate("/customers");
         },
         onError: (error) => {
+            console.log("err:",error.message)
             console.log(error);
             toast.error(t(error.message))
         },
@@ -64,11 +65,12 @@ export default function AddUserForm() {
             gender: "",
             cover: null,
             file: "",
-            GSTNumber: ""
+            GSTNumber: "",
         },
         validationSchema: NewUserSchema,
         onSubmit: async (values) => {
             console.log(values);
+            console.log("values:", values)
             const { file, ...rest } = values;
             try {
                 mutate({ ...rest, cover: file });
@@ -126,6 +128,7 @@ export default function AddUserForm() {
                 setstate({ ...state, loading: false });
             });
     };
+
     return (
         <Box>
             <FormikProvider value={formik}>
@@ -210,9 +213,9 @@ export default function AddUserForm() {
                                             <LabelStyle>{t("GST Number")}</LabelStyle>
                                             <TextField
                                                 fullWidth
-                                                {...getFieldProps("gst")}
-                                                error={Boolean(touched.gst && errors.gst)}
-                                                helperText={touched.gst && errors.gst}
+                                                {...getFieldProps("GSTNumber")}
+                                                error={Boolean(touched.GSTNumber && errors.GSTNumber)}
+                                                helperText={touched.GSTNumber && errors.GSTNumber}
                                             />
                                         </FormControl>
                                     </Grid>

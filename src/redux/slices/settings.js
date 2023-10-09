@@ -12,7 +12,7 @@ const initialState = {
   mode: "light",
   language: "en",
   isInitialized: false,
-  cartItems: false
+  cartItems: []
 };
 
 const slice = createSlice({

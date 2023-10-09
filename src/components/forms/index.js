@@ -6,3 +6,4 @@ export * from "./homeBanners";
 export * from "./subCategories";
 export * from "./brand";
 export * from './Shipping';
+export * from "./cart";

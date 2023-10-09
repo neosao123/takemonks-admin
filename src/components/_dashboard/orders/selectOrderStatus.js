@@ -9,6 +9,7 @@ import * as api from "src/services";
 import { useTranslation } from "react-i18next";
 // notification
 import toast from 'react-hot-toast';
+import { useEffect } from "react";
 export default function SelectOrderStatus({ data }) {
   const navigate = useNavigate();
   const { t } = useTranslation("order");
@@ -23,6 +24,7 @@ export default function SelectOrderStatus({ data }) {
   });
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selected, setSelected] = React.useState(null);
+  const [statusArray, setStatusArray] = React.useState([]);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -34,6 +36,20 @@ export default function SelectOrderStatus({ data }) {
     }
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    if (data?.status === "pending") {
+      setStatusArray([
+        "pending", "ontheway", "delivered", "cancelled"
+      ])
+    }
+    if (data?.status === "ontheway") {
+      setStatusArray(["ontheway", "delivered", "cancelled"])
+    }
+    if (data?.status === "delivered") {
+      setStatusArray(["delivered", "returned"])
+    }
+  })
 
   return (
     <>
@@ -60,7 +76,7 @@ export default function SelectOrderStatus({ data }) {
           "aria-labelledby": "basic-button",
         }}
       >
-        {["pending", "ontheway", "delivered", "returned", "cancelled"].map(
+        {statusArray.map(
           (status) => (
             <MenuItem
               sx={{ textTransform: "capitalize" }}
