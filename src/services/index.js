@@ -301,3 +301,9 @@ export const deleteAmc = async (id) => {
   const { data } = await http.delete(`/admin/amcs/${id}`);
   return data;
 };
+
+//customer
+export const getCustomerList = async () => {
+  const { data } = await http.get(`/admin/customer`);
+  return data;
+}

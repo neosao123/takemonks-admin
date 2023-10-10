@@ -80,7 +80,6 @@ export default function AddProductForm({
     const cartdata = useSelector((state) => {
         return state.settings.cartItems
     })
-    console.log("CART:", cartdata)
     const { mutate, isLoading } = useMutation("new", api.addUser, {
         onSuccess: () => {
             toast.success("New User Added");
@@ -128,9 +127,13 @@ export default function AddProductForm({
                 }
             })
             dispatch(setCartItems(new_data))
+            toast.success("Item Removed from cart");
         }
         else {
+            data.quantity = 1;
+            data.totalPrice = data?.quantity * data?.priceSale;
             dispatch(setCartItems([...cartdata, data]))
+            toast.success("Item Added to cart");
         }
     }
 
