@@ -32,6 +32,7 @@ import {
   SelectOrderStatus,
   Page,
   Toolbar,
+  ordertrackNumber
 } from "src/components";
 // import { InvoiceToolbar } from "src/components/invoice";
 // api
@@ -39,8 +40,12 @@ import * as api from "src/services";
 
 // utils
 import { fCurrency } from "src/utils/formatNumber";
+import DeliveryPartnerAndOrderTrackingNumber from "src/components/_dashboard/orders/DeliveryPartnerAndOrderTrackingNumber";
+import { useState } from "react";
+import { useEffect } from "react";
 // ----------------------------------------------------------------------
 export default function OrderDetail() {
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
   const { t } = useTranslation("order");
@@ -71,6 +76,15 @@ export default function OrderDetail() {
       navigate("/404");
     },
   });
+
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  useEffect(() => {
+    if (data?.status === "shipped" && !data?.deliveryPartner === "" && !data?.ordertrackingNumber === "") {
+      handleOpen()
+    }
+  }, [])
   const isLoading = orderLoading || deleteLoading;
   return (
     <Page title={`Order Details | ${process.env.REACT_APP_DOMAIN_NAME}`}>
@@ -132,113 +146,114 @@ export default function OrderDetail() {
         </CardContent>
 
         {/* <Card sx={{ mt: 1 }}> */}
-          {isLoading ? (
-            <Skeleton variant="text" width={100} sx={{ m: 2 }} />
-          ) : (
-            <Typography variant="h5" sx={{ p: 2 }}>
-              {items?.length > 1 ? t("items") : t("item")} {items?.length}
-            </Typography>
-          )}
-          <DetailsTable
-            data={items}
-            isLoading={isLoading}
-            currency={data?.currency}
-          />
-          <Divider />
-          <Table>
-            <TableBody>
-              <TableRow
-                sx={{
-                  "& .MuiTableCell-root": {
-                    bgcolor: (theme) => theme.palette.background.neutral,
-                  },
-                }}
-              >
-                <TableCell colSpan={4}></TableCell>
-                <TableCell align="right">
-                  {isLoading ? (
-                    <Skeleton
-                      variant="text"
-                      sx={{ float: "right" }}
-                      width={100}
-                    />
-                  ) : (
-                    <strong>{t("subtotal")}</strong>
-                  )}
-                </TableCell>
-                <TableCell align="right">
-                  {isLoading ? (
-                    <Skeleton
-                      variant="text"
-                      sx={{ float: "right" }}
-                      width={100}
-                    />
-                  ) : (
-                    <strong>
-                      {data?.currency} {data?.subTotal}
-                    </strong>
-                  )}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={4}></TableCell>
-                <TableCell align="right">
-                  {isLoading ? (
-                    <Skeleton
-                      variant="text"
-                      sx={{ float: "right" }}
-                      width={100}
-                    />
-                  ) : (
-                    <strong>{t("shipping-fee")}</strong>
-                  )}
-                </TableCell>
-                <TableCell align="right">
-                  {isLoading ? (
-                    <Skeleton
-                      variant="text"
-                      sx={{ float: "right" }}
-                      width={100}
-                    />
-                  ) : (
-                    <strong>
-                      {data?.currency} {data?.shipping}
-                    </strong>
-                  )}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={4}></TableCell>
-                <TableCell align="right">
-                  {isLoading ? (
-                    <Skeleton
-                      variant="text"
-                      sx={{ float: "right" }}
-                      width={100}
-                    />
-                  ) : (
-                    <strong>{t("total")}</strong>
-                  )}
-                </TableCell>
-                <TableCell align="right">
-                  {isLoading ? (
-                    <Skeleton
-                      variant="text"
-                      sx={{ float: "right" }}
-                      width={100}
-                    />
-                  ) : (
-                    <strong>
-                      {" "}
-                      {data?.currency} {data?.total}
-                    </strong>
-                  )}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+        {isLoading ? (
+          <Skeleton variant="text" width={100} sx={{ m: 2 }} />
+        ) : (
+          <Typography variant="h5" sx={{ p: 2 }}>
+            {items?.length > 1 ? t("items") : t("item")} {items?.length}
+          </Typography>
+        )}
+        <DetailsTable
+          data={items}
+          isLoading={isLoading}
+          currency={data?.currency}
+        />
+        <Divider />
+        <Table>
+          <TableBody>
+            <TableRow
+              sx={{
+                "& .MuiTableCell-root": {
+                  bgcolor: (theme) => theme.palette.background.neutral,
+                },
+              }}
+            >
+              <TableCell colSpan={4}></TableCell>
+              <TableCell align="right">
+                {isLoading ? (
+                  <Skeleton
+                    variant="text"
+                    sx={{ float: "right" }}
+                    width={100}
+                  />
+                ) : (
+                  <strong>{t("subtotal")}</strong>
+                )}
+              </TableCell>
+              <TableCell align="right">
+                {isLoading ? (
+                  <Skeleton
+                    variant="text"
+                    sx={{ float: "right" }}
+                    width={100}
+                  />
+                ) : (
+                  <strong>
+                    {data?.currency} {data?.subTotal}
+                  </strong>
+                )}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={4}></TableCell>
+              <TableCell align="right">
+                {isLoading ? (
+                  <Skeleton
+                    variant="text"
+                    sx={{ float: "right" }}
+                    width={100}
+                  />
+                ) : (
+                  <strong>{t("shipping-fee")}</strong>
+                )}
+              </TableCell>
+              <TableCell align="right">
+                {isLoading ? (
+                  <Skeleton
+                    variant="text"
+                    sx={{ float: "right" }}
+                    width={100}
+                  />
+                ) : (
+                  <strong>
+                    {data?.currency} {data?.shipping}
+                  </strong>
+                )}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={4}></TableCell>
+              <TableCell align="right">
+                {isLoading ? (
+                  <Skeleton
+                    variant="text"
+                    sx={{ float: "right" }}
+                    width={100}
+                  />
+                ) : (
+                  <strong>{t("total")}</strong>
+                )}
+              </TableCell>
+              <TableCell align="right">
+                {isLoading ? (
+                  <Skeleton
+                    variant="text"
+                    sx={{ float: "right" }}
+                    width={100}
+                  />
+                ) : (
+                  <strong>
+                    {" "}
+                    {data?.currency} {data?.total}
+                  </strong>
+                )}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
         {/* </Card> */}
       </Card>
+      {/* <DeliveryPartnerAndOrderTrackingNumber open={open} setOpen={setOpen} handleClose={handleClose} /> */}
     </Page>
   );
 }

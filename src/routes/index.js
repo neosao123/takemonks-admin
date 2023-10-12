@@ -98,10 +98,9 @@ export default function Router() {
         { path: "/customers", element: <CustomersList /> },
         { path: "/customers/add", element: <AddCustomer /> },
         { path: "/customers/:id", element: <CustomerProfile /> },
-        { path: "/customers/:id/addproduct", element: <AddProductForCustomer /> },
-
 
         //cart
+        { path: "/addproducts", element: <AddProductForCustomer /> },
         { path: "/cart", element: <Cart /> }
       ],
     },

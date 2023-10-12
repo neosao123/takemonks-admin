@@ -40,14 +40,17 @@ export default function SelectOrderStatus({ data }) {
   useEffect(() => {
     if (data?.status === "pending") {
       setStatusArray([
-        "pending", "ontheway", "delivered", "cancelled"
+        "shipped", "in transit", "delivered", "cancelled"
       ])
     }
-    if (data?.status === "ontheway") {
-      setStatusArray(["ontheway", "delivered", "cancelled"])
+    if (data?.status === "shipped") {
+      setStatusArray(["in transit","delivered", "cancelled", "returned"])
+    }
+    if (data?.status === "in transit") {
+      setStatusArray(["delivered", "cancelled", "returned"])
     }
     if (data?.status === "delivered") {
-      setStatusArray(["delivered", "returned"])
+      setStatusArray(["returned"])
     }
   })
 

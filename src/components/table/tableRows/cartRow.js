@@ -31,7 +31,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { setCartItems } from "src/redux/slices/settings";
+import { setCartItems, setAmcItems } from "src/redux/slices/settings";
 
 const ThumbImgStyle = styled("img")(({ theme }) => ({
     width: 50,
@@ -50,7 +50,7 @@ export default function CartRow({ isLoading, row, handleClickOpen, mutate }) {
     const navigate = useNavigate();
     const { i18n } = useTranslation();
     const { language } = i18n;
-    const cartitem = useSelector((state) => state.settings.cartItems)
+    const { cartItems, amcsItems } = useSelector((state) => state.settings)
     // useEffect(() => {
     //     const newitems = cartitem?.map((el) => {
     //         if (el._id === row._id) {
@@ -59,65 +59,122 @@ export default function CartRow({ isLoading, row, handleClickOpen, mutate }) {
     //     })
     //     dispatch(setCartItems(newitems))
     // }, [quantity])
-    const cartitems = [...cartitem]
-
-
+    const cartitems = [...cartItems];
+    const amcitems = [...amcsItems];
 
     const handleIncrese = () => {
-        let item;
-        let q;
-        cartitems.length > 0 && cartitems.map((el) => {
-            if (el._id === row._id) {
-                item = el;
-                q = el.quantity;
-            }
-        })
-        const tp = item.priceSale * (q + 1)
+        if (row?.producttype === "amc") {
+            let item;
+            let q;
+            amcitems.length > 0 && amcitems.map((el) => {
+                if (el._id === row._id) {
+                    item = el;
+                    q = el.quantity;
+                }
+            })
+            const tp = item.priceSale * (q + 1)
 
-        const newItem = { ...item, quantity: q + 1, totalPrice: tp };
-        const newArray = cartitems?.map((el) => {
-            if (el._id !== row?._id) {
-                return el
-            }
-            else {
-                return newItem;
-            }
-        })
-        dispatch(setCartItems(newArray))
+            const newItem = { ...item, quantity: q + 1, subTotal: tp };
+            const newArray = amcitems?.map((el) => {
+                if (el._id !== row?._id) {
+                    return el
+                }
+                else {
+                    return newItem;
+                }
+            })
+            dispatch(setAmcItems(newArray))
+        }
+        else {
+            let item;
+            let q;
+            cartitems.length > 0 && cartitems.map((el) => {
+                if (el._id === row._id) {
+                    item = el;
+                    q = el.quantity;
+                }
+            })
+            const tp = item.priceSale * (q + 1)
 
+            const newItem = { ...item, quantity: q + 1, subTotal: tp };
+            const newArray = cartitems?.map((el) => {
+                if (el._id !== row?._id) {
+                    return el
+                }
+                else {
+                    return newItem;
+                }
+            })
+            dispatch(setCartItems(newArray))
+        }
     }
 
     const handleReduce = () => {
-        let item;
-        let q;
-        cartitems.length > 0 && cartitems.map((el) => {
-            if (el._id === row._id) {
-                item = el;
-                q = el.quantity;
-            }
-        })
-        const tp = item.priceSale * (q - 1)
+        if (row?.producttype === "amc") {
+            let item;
+            let q;
+            amcitems.length > 0 && amcitems.map((el) => {
+                if (el._id === row._id) {
+                    item = el;
+                    q = el.quantity;
+                }
+            })
+            const tp = item.priceSale * (q - 1)
 
-        const newItem = { ...item, quantity: q - 1, totalPrice: tp };
-        const newArray = cartitems?.map((el) => {
-            if (el._id !== row?._id) {
-                return el
-            }
-            else {
-                return newItem;
-            }
-        })
-        dispatch(setCartItems(newArray))
+            const newItem = { ...item, quantity: q - 1, subTotal: tp };
+            const newArray = amcitems?.map((el) => {
+                if (el._id !== row?._id) {
+                    return el
+                }
+                else {
+                    return newItem;
+                }
+            })
+            dispatch(setAmcItems(newArray))
+        }
+        else {
+            let item;
+            let q;
+            cartitems.length > 0 && cartitems.map((el) => {
+                if (el._id === row._id) {
+                    item = el;
+                    q = el.quantity;
+                }
+            })
+            const tp = item.priceSale * (q - 1)
+
+            const newItem = { ...item, quantity: q - 1, subTotal: tp };
+            const newArray = cartitems?.map((el) => {
+                if (el._id !== row?._id) {
+                    return el
+                }
+                else {
+                    return newItem;
+                }
+            })
+            dispatch(setCartItems(newArray))
+        }
     }
 
     const handleRemoveCartiem = () => {
-        const newArray = cartitems?.filter((el) => {
-            if (el._id !== row._id) {
-                return el;
-            }
-        });
-        dispatch(setCartItems(newArray));
-        toast.success("Item Removed from the cart.")
+        if (row?.producttype === "amc") {
+            const newArray = amcitems?.filter((el) => {
+                if (el._id !== row._id) {
+                    return el;
+                }
+            });
+            dispatch(setAmcItems(newArray));
+            toast.success("Item Removed from the cart.")
+        }
+        else {
+            const newArray = cartitems?.filter((el) => {
+                if (el._id !== row._id) {
+                    return el;
+                }
+            });
+            dispatch(setCartItems(newArray));
+            toast.success("Item Removed from the cart.")
+        }
     }
 
     return (
@@ -143,7 +200,7 @@ export default function CartRow({ isLoading, row, handleClickOpen, mutate }) {
                             sx={{ borderRadius: 1 }}
                         />
                     ) : Boolean(row.cover) > 0 ? (
-                        <ThumbImgStyle alt={row?.name} src={row?.cover} />
+                        row.cover.url ? <ThumbImgStyle alt={row?.name} src={row?.cover?.url} /> : <ThumbImgStyle alt={row?.name} src={row?.cover} />
                     ) : (
                         <Avatar> {row?.name?.slice(0, 1)} </Avatar>
                     )}{" "}
@@ -152,7 +209,7 @@ export default function CartRow({ isLoading, row, handleClickOpen, mutate }) {
                         {isLoading ? (
                             <Skeleton variant="text" width={120} sx={{ ml: 1 }} />
                         ) : (
-                            row?.name
+                            row?.name || row?.title
                         )}{" "}
                     </Typography>{" "}
                 </Box>{" "}
@@ -163,7 +220,6 @@ export default function CartRow({ isLoading, row, handleClickOpen, mutate }) {
                     <Skeleton variant="text" />
                 ) : (
                     <>
-
                         <Typography><Button disabled={row?.quantity <= 1} onClick={handleReduce} >-</Button>{row?.quantity}<Button disabled={row?.available <= row?.quantity} onClick={handleIncrese} >+</Button></Typography>
                     </>
                 )}{" "}
@@ -173,7 +229,7 @@ export default function CartRow({ isLoading, row, handleClickOpen, mutate }) {
                 {isLoading ? (
                     <Skeleton variant="text" />
                 ) : (
-                    fCurrency((row?.priceSale))
+                    fCurrency((row?.priceSale || row?.price))
                 )}{" "}
             </TableCell>{" "}
             <TableCell>
@@ -181,7 +237,7 @@ export default function CartRow({ isLoading, row, handleClickOpen, mutate }) {
                 {isLoading ? (
                     <Skeleton variant="text" />
                 ) : (
-                    fCurrency((row?.quantity * row?.priceSale))
+                    fCurrency((row?.subTotal))
                 )}{" "}
             </TableCell>{" "}
             <TableCell align="right">
@@ -204,23 +260,6 @@ export default function CartRow({ isLoading, row, handleClickOpen, mutate }) {
                     </Stack>
                 ) : (
                     <Stack direction="row" justifyContent="flex-end">
-                        {/* <Link
-                            target="_blank"
-                            href={`${process.env.REACT_APP_BASE_URL}/products/${paramCase(
-                                row?.name
-                            )}`}
-                        >
-                            <IconButton>
-                                <RemoveRedEyeIcon />
-                            </IconButton>{" "}
-                        </Link>{" "}
-                        <Tooltip title="Edit">
-                            <IconButton
-                                onClick={() => navigate(`/products/${paramCase(row?.name)}`)}
-                            >
-                                <EditRoundedIcon />
-                            </IconButton>
-                        </Tooltip>{" "} */}
                         <Tooltip title="Delete">
                             <IconButton onClick={handleRemoveCartiem}>
                                 <DeleteRoundedIcon />

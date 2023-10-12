@@ -113,9 +113,9 @@ export const updateSubCategory = async ({ id, ...payload }) => {
   return data;
 };
 
-export const getOrders = async (page, search) => {
+export const getOrders = async (page, search, startDate, endDate, productName, deliveryStatus) => {
   const { data } = await http.get(
-    `/admin/orders?search=${search}&page=${page}`
+    `/admin/orders?search=${search}&page=${page}&startDate=${startDate}&endDate=${endDate}&deliveryStatus=${deliveryStatus}&productName=${productName}`
   );
   return data;
 };
@@ -306,4 +306,16 @@ export const deleteAmc = async (id) => {
 export const getCustomerList = async () => {
   const { data } = await http.get(`/admin/customer`);
   return data;
+}
+//shipping charges
+
+export const getShippingCharges = async () => {
+  const { data } = await http.get("/admin/comman-setting");
+  return data;
+}
+
+//place order
+export const placeOrder = async (obj) => {
+  const res = await http.post("/orders", obj);
+  return res
 }

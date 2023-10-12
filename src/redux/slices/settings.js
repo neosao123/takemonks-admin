@@ -12,7 +12,11 @@ const initialState = {
   mode: "light",
   language: "en",
   isInitialized: false,
-  cartItems: []
+  cartItems: [],
+  shipping: 0,
+  subtotal: 0,
+  total: 0,
+  amcsItems: [],
 };
 
 const slice = createSlice({
@@ -50,6 +54,18 @@ const slice = createSlice({
     },
     setCartItems(state, action) {
       state.cartItems = action.payload
+    },
+    setShipping(state, action) {
+      state.shipping = action.payload
+    },
+    setSubtotal(state, action) {
+      state.subtotal = action.payload
+    },
+    setTotalCart(state, action) {
+      state.total = action.payload
+    },
+    setAmcItems(state, action) {
+      state.amcsItems = action.payload
     }
   },
 });
@@ -66,7 +82,11 @@ export const {
   setUnitRate,
   setInitialize,
   setThemeMode,
-  setCartItems
+  setCartItems,
+  setShipping,
+  setSubtotal,
+  setTotalCart,
+  setAmcItems,
 } = slice.actions;
 
 // ----------------------------------------------------------------------

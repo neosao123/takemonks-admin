@@ -45,6 +45,7 @@ export default function EcommerceAmcList() {
     const [id, setId] = useState(null);
 
 
+
     const { data, isLoading } = useQuery(
         ["amcs", apicall, searchParam, pageParam],
         () => api.getAmcs(+pageParam || 1, searchParam || ""),

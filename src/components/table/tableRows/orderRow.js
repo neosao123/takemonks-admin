@@ -11,6 +11,7 @@ import {
   Avatar,
   IconButton,
   Tooltip,
+  Button,
 } from "@mui/material";
 // components
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -43,7 +44,7 @@ export default function OrderRow({ isLoading, row, isUser }) {
             alignItems: "center",
           }}
         >
-          {isLoading ? (
+          {/* {isLoading ? (
             <Skeleton
               variant="rectangular"
               width={50}
@@ -54,10 +55,10 @@ export default function OrderRow({ isLoading, row, isUser }) {
             <ThumbImgStyle
               alt={row.items[0].fullName}
               src={row.items[0].cover}
-            /> 
+            />
           ) : (
             <Avatar> {row.user.fullName} </Avatar>
-          )}{" "}
+          )}{" "} */}
           <Typography variant="subtitle2" noWrap>
             {" "}
             {isLoading ? (
@@ -69,6 +70,14 @@ export default function OrderRow({ isLoading, row, isUser }) {
             )}{" "}
           </Typography>{" "}
         </Box>{" "}
+      </TableCell>{" "}
+      <TableCell>
+        {" "}
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <> {row?.user?.phone} </>
+        )}{" "}
       </TableCell>{" "}
       <TableCell>
         {" "}
@@ -88,6 +97,8 @@ export default function OrderRow({ isLoading, row, isUser }) {
             color={
               (row?.status === "delivered" && "success") ||
               (row?.status === "ontheway" && "warning") ||
+              (row?.status === "in transit" && "warning") ||
+              (row?.status === "shipped" && "warning") ||
               (row?.status === "pending" && "info") ||
               "error"
             }
@@ -126,6 +137,11 @@ export default function OrderRow({ isLoading, row, isUser }) {
             </Tooltip>
           )}{" "}
         </Stack>{" "}
+      </TableCell>{" "}
+      <TableCell>
+        <Box sx={{ display: "flex", justifyContent: "right" }}>
+          <Button disabled={row?.status !== "delivered"} variant="contained">Send Mail</Button>
+        </Box>
       </TableCell>{" "}
     </TableRow>
   );

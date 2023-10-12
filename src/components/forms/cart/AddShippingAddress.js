@@ -1,14 +1,18 @@
-import { Grid, TextField, Card, CardContent, CardHeader, Select, MenuItem, InputLabel, FormControl, Checkbox, FormControlLabel, Box } from "@mui/material";
+import { Grid, TextField, Card, CardContent, CardHeader, Select, MenuItem, InputLabel, FormControl, Checkbox, FormControlLabel, Box, Autocomplete, Button } from "@mui/material";
 import { Form, FormikProvider, useFormik } from "formik";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useQuery } from "react-query";
-import { useSearchParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { setCartItems, setShipping, setTotalCart, setSubtotal, } from "src/redux/slices/settings";
 import * as api from "src/services";
 
 
 export default function AddShippingAddress() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchparams] = useSearchParams();
+    const navigate = useNavigate();
     const searchParam = searchparams.get("search")
     const [address, setAddress] = useState("");
     const [city, setCity] = useState("")
@@ -21,13 +25,16 @@ export default function AddShippingAddress() {
     const [billingState, setbillingState] = useState("");
     const [billingZip, setbillingZip] = useState("");
     const [billingCountry, setbillingCountry] = useState("");
-    const [apicall, setApicall] = useState(0);
-    const [userData, setUserData] = useState([])
+    const [userData, setUserData] = useState([]);
+    const [option, setOption] = useState([]);
+    const [customer, setCustomer] = useState(null);
+    const { cartItems, shipping, subtotal, total, amcsItems } = useSelector((state) => state.settings);
+    const dispatch = useDispatch();
 
     const handleChange = (e) => {
         if (e.target.checked === true) {
             setbillingAddressField(address);
-            setbillingState(billingState);
+            setbillingState(state);
             setbillingZip(zip);
             setbillingCountry(country);
             setbillingCity(city);
@@ -40,7 +47,90 @@ export default function AddShippingAddress() {
             setbillingZip("")
         }
     }
+    const Checkout = async () => {
+        const newCartitems = cartItems?.map((el) => {
+            let obj = {
+                _id: el._id,
+                producttype: el.producttype,
+                color: el.color,
+                cover: el.cover,
+                name: el.name,
+                price: el.price,
+                priceSale: el.priceSale,
+                quantity: el.quantity,
+                size: el.size,
+                subTotal: el.subTotal,
+                sku: el.sku,
+                durationType: el.durationType,
+                durationCount: el.durationCount,
+                amcProductId: el.amcProductId
+            }
+            return obj;
+        })
 
+        console.log("cartitems:", newCartitems)
+
+        let obj = {
+            paymentMethod: "COD",
+            subTotal: subtotal,
+            total: total,
+            shipping: shipping,
+            discount: 0,
+            basePrice: total,
+            currency: "₹",
+            status: "pending",
+            items: [...newCartitems],
+            amcsItems: [...amcsItems],
+            user: {
+                _id: customer._id,
+                fullName: customer.fullName,
+                email: customer.email,
+                phone: phone,
+                avatar: "",
+                address: address,
+                city: city,
+                state: state,
+                country: country,
+                zip: zip,
+                billingAddressField: billingAddressField,
+                billingCity: billingCity,
+                billingCountry: billingCountry,
+                billingState: billingState,
+                billingZip: billingZip
+            }
+        }
+
+        api.placeOrder(obj)
+            .then((res) => {
+                if (res.data.success === true) {
+                    toast.success(res.data.message)
+                }
+            })
+            .then(() => {
+                setCustomer(null),
+                    setCountry(""),
+                    setState(""),
+                    setCity(""),
+                    setPhone(""),
+                    setAddress(""),
+                    setZip(""),
+                    setbillingAddressField("");
+                setbillingState("");
+                setbillingCity("");
+                setbillingCountry("");
+                setbillingZip("");
+                dispatch(setCartItems([]));
+                dispatch(setShipping(0));
+                dispatch(setTotalCart(0));
+                dispatch(setSubtotal(0))
+            })
+            .then(() => {
+                navigate("/orders")
+            })
+            .catch((error) => {
+                console.log(err)
+            })
+    }
 
     useEffect(() => {
         api.getCustomerList()
@@ -52,9 +142,10 @@ export default function AddShippingAddress() {
                 console.log("err:", err)
             })
     }, [])
-    console.log("userdata", userData)
 
-
+    const handleChangeSelect = (event, newvalue) => {
+        setCustomer(newvalue)
+    }
 
 
 
@@ -62,16 +153,25 @@ export default function AddShippingAddress() {
         <Card>
             <CardHeader title="Customer Details"></CardHeader>
             <CardContent>
-                <FormControl fullWidth>
+                {/* <FormControl fullWidth>
                     <InputLabel id="customer">Customer</InputLabel>
-                    <Select label="Customer" required labelId="customer" fullWidth  onChange={(e) => setCountry(e.target.value)}>
+                    <Select label="Customer" required labelId="customer" fullWidth onChange={(e) => setCountry(e.target.value)}>
                         {
                             userData?.map((el) => {
                                 return <MenuItem value={el._id} key={el._id} >{el.fullName}</MenuItem>
                             })
                         }
                     </Select>
-                </FormControl>
+                </FormControl> */}
+                <Autocomplete
+                    id="grouped-demo"
+                    options={userData}
+                    groupBy={(option) => option.firstLetter}
+                    getOptionLabel={(option) => option.fullName + "          " + option.phone}
+                    sx={{ width: 300 }}
+                    renderInput={(params) => <TextField {...params} label="Customers" />}
+                    onChange={handleChangeSelect}
+                />
             </CardContent>
             <CardHeader title="Shipping Address" ></CardHeader>
             <CardContent>
@@ -129,6 +229,9 @@ export default function AddShippingAddress() {
                     </Grid>
 
                 </Grid>
+            </CardContent>
+            <CardContent sx={{ display: "flex", justifyContent: "center" }}>
+                <Button onClick={Checkout} sx={{ color: "white", backgroundColor: "green", border: "none" }}>Checkout</Button>
             </CardContent>
         </Card>
     )

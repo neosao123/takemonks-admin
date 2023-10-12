@@ -21,7 +21,6 @@ import axios from "axios";
 import { Pagination } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setCartItems, setCount } from "src/redux/slices/settings";
-import { rootReducer } from "src/redux/rootReducer";
 // ----------------------------------------------------------------------
 
 
@@ -130,9 +129,24 @@ export default function AddProductForm({
             toast.success("Item Removed from cart");
         }
         else {
-            data.quantity = 1;
-            data.totalPrice = data?.quantity * data?.priceSale;
-            dispatch(setCartItems([...cartdata, data]))
+            let obj = {
+                _id: data?._id,
+                producttype: "product",
+                color: "Black",
+                cover: data?.cover,
+                name: data?.name,
+                price: data?.price,
+                priceSale: data?.priceSale,
+                quantity: 1,
+                size: "any",
+                subTotal: data?.priceSale,
+                sku: data?.name.toLowerCase().replace(/\s+/g, '-'),
+                durationType: "",
+                durationCount: "",
+                amcProductId: {},
+                available: data?.available
+            }
+            dispatch(setCartItems([...cartdata, obj]))
             toast.success("Item Added to cart");
         }
     }
@@ -141,59 +155,6 @@ export default function AddProductForm({
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            {/* <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} md={8}>
-                            <Card sx={{ p: 3 }}>
-                                <Stack spacing={3}>
-                                    <FormControl fullWidth>
-                                        <LabelStyle>{t("category")}</LabelStyle>
-                                        {!categoryLoading ? (
-                                            <Select
-                                                native
-                                                {...getFieldProps("category")}
-                                                id="grouped-native-select"
-                                            >
-                                                <option value="" disabled hidden style={{ display: "none" }}></option>
-                                                {categories?.map((category) => (
-                                                    <optgroup
-                                                        label={capitalCase(category[0].parentCategory)}
-                                                        key={Math.random()}
-                                                    >
-                                                        {category?.map((v) => (
-                                                            <option
-                                                                key={category._id}
-                                                                value={category?.name?.lowerCase()}
-                                                            >
-                                                                {v.name}
-                                                            </option>
-                                                        ))}
-                                                    </optgroup>
-                                                ))}
-                                            </Select>
-                                        ) : (
-                                            <Skeleton
-                                                variant="rectangular"
-                                                width={"100%"}
-                                                height={56}
-                                            />
-                                        )}
-                                    </FormControl>
-                                </Stack>
-                                <LoadingButton
-                                    type="submit"
-                                    variant="contained"
-                                    size="large"
-                                    loading={isLoading}
-                                    sx={{ ml: "auto", mt: 3 }}
-                                >
-                                    {t("add-product")}
-                                </LoadingButton>
-                            </Card>
-                        </Grid>
-                    </Grid>
-                </Form> */}
-            {/* Make price and the value of price side by side */}
             <FormikProvider value={formik}>
                 <Grid container spacing={1}>
                     {data?.data?.map((data, index) => (
@@ -224,7 +185,7 @@ export default function AddProductForm({
                                     </Box>
                                 </CardContent>
                                 <CardActions sx={{ justifyContent: 'center' }}>
-                                    <Button variant="contained" size="small" onClick={(e) => addToCart(e, data)}>
+                                    <Button variant="contained" size="small" sx={{ backgroundColor: `${cartdata.some((el) => el._id === data._id) ? "green" : ""}` }} onClick={(e) => addToCart(e, data)}>
                                         {cartdata.some((el) => el._id === data._id) ? "Added to cart" : "Add to cart"}
                                     </Button>
                                 </CardActions>
@@ -234,13 +195,6 @@ export default function AddProductForm({
 
                 </Grid>
             </FormikProvider>
-            {/* <Box sx={{ display: "flex", justifyContent: "center", pb: 3, }}>
-                <Pagination
-                    count={data?.count || 0}
-                    page={currentPage}
-                    onChange={(event, value) => setCurrentPage(value)}
-                />
-            </Box> */}
             <Stack spacing={2} mt={2} pr={2}>
                 <Pagination
                     count={data?.count}
@@ -253,6 +207,6 @@ export default function AddProductForm({
                 />
             </Stack>
 
-        </Box>
+        </Box >
     );
 }

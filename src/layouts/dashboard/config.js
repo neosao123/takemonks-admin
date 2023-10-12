@@ -99,12 +99,6 @@ const sidebarConfig = [
     icon: <Icon icon="majesticons:users-line" />,
     isSearch: true,
   },
-  {
-    title: "cart",
-    path: "/cart",
-    icon: <Icon icon="ion:bag" />,
-    isSearch: true,
-  },
   // {
   //   title: "newsletter",
   //   path: "/newsletter",

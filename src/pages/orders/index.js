@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // react router dom
 import { Form, useSearchParams } from "react-router-dom";
 // api
@@ -20,6 +20,7 @@ import {
   OrderRow,
 } from "src/components";
 import { ClassNames } from "@emotion/react";
+import { start } from "nprogress";
 
 //------------------------------css--------------------------------//
 
@@ -29,11 +30,13 @@ import { ClassNames } from "@emotion/react";
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "name", label: "product", alignRight: false },
-  { id: "createdAt", label: "created-at", alignRight: false, sort: true },
+  { id: "name", label: "name", alignRight: false },
+  { id: "phone", label: "Phone Number", alignRight: false },
+  { id: "createdAt", label: "Order Date", alignRight: false, sort: true },
   { id: "inventoryType", label: "status", alignRight: false, sort: true },
   { id: "price", label: "price", alignRight: false, sort: true },
   { id: "quantity", label: "quantity", alignRight: false },
+  { id: "", label: "view", alignRight: true },
   { id: "", label: "actions", alignRight: true },
 ];
 
@@ -42,14 +45,18 @@ export default function EcommerceProductList() {
 
   const { t } = useTranslation("order");
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = searchParams.get("page");
   const searchParam = searchParams.get("search");
   const [apicall, setApicall] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("")
+  const [selectedOption, setSelectedOption] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [productName, setProductName] = useState("");
+  const [deliveryStatus, setDeliveryStatus] = useState("");
   const { data, isLoading: loadingList } = useQuery(
-    ["orders", apicall, pageParam, searchParam],
-    () => api.getOrders(+pageParam || 1, searchParam || ""),
+    ["orders", apicall, pageParam, searchParam, startDate, endDate, productName, deliveryStatus],
+    () => api.getOrders(+pageParam || 1, searchParam || "", startDate || "", endDate || "", productName || "", deliveryStatus || ""),
     {
       onError: (err) =>
         toast.error(err.response.data.message || "Something went wrong!"),
@@ -67,6 +74,27 @@ export default function EcommerceProductList() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    let params = {
+
+    }
+    if (startDate) {
+      params.startDate = startDate
+    }
+    if (endDate) {
+      params.endDate = endDate
+    }
+    if (productName) {
+      params.productName = productName
+    }
+    if (deliveryStatus) {
+      params.deliveryStatus = deliveryStatus
+    }
+    setSearchParams(params);
+  }, [startDate, endDate, productName, deliveryStatus])
+
+
 
 
 
@@ -94,30 +122,34 @@ export default function EcommerceProductList() {
             {
               name: t("orders"),
               href: "",
-            },
+            }
           ]}
+          action={{
+            href: `/addproducts`,
+            title: t("add product"),
+          }}
         />
       </Toolbar>
-      <Card sx={{marginBottom:"10px"}} >
+      <Card sx={{ marginBottom: "10px" }} >
         <CardHeader title="Order Filter">
         </CardHeader>
         <CardContent>
           <Grid container spacing={1} gap={2}>
             <Grid item xs={12} lg={3} xl={2} md={4} sm={5}>
-              <TextField label="From Date" fullWidth placeholder="" InputLabelProps={{
+              <TextField label="From Date" fullWidth placeholder="" name="startDate" InputLabelProps={{
                 shrink: true,
-              }} variant="outlined" type="date" />
+              }} variant="outlined" type="date" onChange={(e) => setStartDate(e.target.value)} value={startDate} />
             </Grid>
             <Grid item display={"flex"} lg={1} md={1} sm={1} justifyContent={"center"} alignContent={"center"} alignItems={"center"}>To</Grid>
             <Grid item xs={12} xl={2} lg={3} md={4} sm={5}>
-              <TextField label="To Date" placeholder="" fullWidth variant="outlined" InputLabelProps={{
+              <TextField label="To Date" placeholder="" fullWidth name="endDate" variant="outlined" InputLabelProps={{
                 shrink: true,
-              }} type="date" />
+              }} type="date" onChange={(e) => setEndDate(e.target.value)} value={endDate} />
             </Grid>
             <Grid itme xs={12} lg={3} xl={2} pt={1} md={4} sm={5}>
-              <TextField label="Product Name" InputLabelProps={{
+              <TextField label="Product Name" name="productName" InputLabelProps={{
                 shrink: true,
-              }} fullWidth variant="outlined" type="text" />
+              }} fullWidth variant="outlined" type="text" onChange={(e) => setProductName(e.target.value)} value={productName} />
             </Grid>
             <Grid item xs={12} xl={2} lg={3} md={4} sm={5}>
               <FormControl fullWidth >
@@ -127,20 +159,20 @@ export default function EcommerceProductList() {
                   id="delivery-status"
                   // value={age}
                   label="Delivery Status"
+                  name="deliveryStatus"
+                  value={deliveryStatus}
+                  onChange={(e) => setDeliveryStatus(e.target.value)}
                 // onChange={handleChange}
                 >
-                  <MenuItem value={10}>Delivered</MenuItem>
-                  <MenuItem value={20}>Pending</MenuItem>
-                  <MenuItem value={30}>Shipped</MenuItem>
-                  <MenuItem value={10}>Canceled</MenuItem>
-                  <MenuItem value={20}>Returned</MenuItem>
-                  <MenuItem value={30}>Out For Delivery</MenuItem>
-                  <MenuItem value={30}>In Transit</MenuItem>
+                  <MenuItem value={"delivered"}>Delivered</MenuItem>
+                  <MenuItem value={"pending"}>Pending</MenuItem>
+                  <MenuItem value={"shipped"}>Shipped</MenuItem>
+                  <MenuItem value={"canceled"}>Canceled</MenuItem>
+                  <MenuItem value={"returned"}>Returned</MenuItem>
+                  <MenuItem value={"outfordelivery"}>Out For Delivery</MenuItem>
+                  <MenuItem value={"in-transit"}>In Transit</MenuItem>
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={12} xl={1} lg={2} md={3} sm={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-              <Button fullWidth variant="contained">Search</Button>
             </Grid>
           </Grid>
         </CardContent>

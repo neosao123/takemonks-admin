@@ -26,7 +26,7 @@ import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceW
 import { fCurrency } from "src/utils/formatNumber";
 import { paramCase } from "change-case";
 import { useDispatch, useSelector } from "react-redux";
-import { setCartItems } from "src/redux/slices/settings";
+import { setCartItems, setAmcItems } from "src/redux/slices/settings";
 
 const RootStyle = styled(Paper)(({ theme }) => ({
     padding: "10px 10px 10px 16px",
@@ -86,66 +86,124 @@ const ThumbImgStyle = styled("img")(({ theme }) => ({
 export default function AgendaCodeMobile({ item, isLoading, handleClickOpen }) {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const cartitem = useSelector((state) => state?.settings?.cartItems);
+    const { cartItems, amcsItems } = useSelector((state) => state?.settings);
 
-    var cartitems = [...cartitem]
+    const cartitems = [...cartItems];
+    const amcitems = [...amcsItems];
 
     const handleIncrese = () => {
-        let itemtochange;
-        let q;
-        cartitems?.length > 0 && cartitems?.map((el) => {
-            if (el._id === item?._id) {
-                itemtochange = el;
-                q = el.quantity;
-            }
-        })
-        const tp = item.priceSale * (q + 1)
+        if (item?.producttype === "amc") {
+            let itemToChange;
+            let q;
+            amcitems.length > 0 && amcitems.map((el) => {
+                if (el._id === item._id) {
+                    itemToChange = el;
+                    q = el.quantity;
+                }
+            })
+            const tp = itemToChange.priceSale * (q + 1)
 
-        const newItem = { ...itemtochange, quantity: q + 1, totalPrice: tp };
-        const newArray = cartitems?.map((el) => {
-            if (el._id !== item?._id) {
-                return el
-            }
-            else {
-                return newItem;
-            }
-        })
-        dispatch(setCartItems(newArray))
+            const newItem = { ...itemToChange, quantity: q + 1, subTotal: tp };
+            const newArray = amcitems?.map((el) => {
+                if (el._id !== item?._id) {
+                    return el
+                }
+                else {
+                    return newItem;
+                }
+            })
+            dispatch(setAmcItems(newArray))
+        }
+        else {
+            let itemToChange;
+            let q;
+            cartitems.length > 0 && cartitems.map((el) => {
+                if (el._id === item._id) {
+                    itemToChange = el;
+                    q = el.quantity;
+                }
+            })
+            const tp = itemToChange.priceSale * (q + 1)
 
+            const newItem = { ...itemToChange, quantity: q + 1, subTotal: tp };
+            const newArray = cartitems?.map((el) => {
+                if (el._id !== item?._id) {
+                    return el
+                }
+                else {
+                    return newItem;
+                }
+            })
+            dispatch(setCartItems(newArray))
+        }
     }
 
     const handleReduce = () => {
-        let itemtochange;
-        let q;
-        cartitems?.length > 0 && cartitems?.map((el) => {
-            if (el._id === item?._id) {
-                itemtochange = el;
-                q = el.quantity;
-            }
-        })
-        const tp = item.priceSale * (q - 1)
+        if (item?.producttype === "amc") {
+            let itemToChange;
+            let q;
+            amcitems.length > 0 && amcitems.map((el) => {
+                if (el._id === item._id) {
+                    itemToChange = el;
+                    q = el.quantity;
+                }
+            })
+            const tp = itemToChange.priceSale * (q - 1)
 
-        const newItem = { ...itemtochange, quantity: q - 1, totalPrice: tp };
-        console.log("newitem", newItem)
-        const newArray = cartitems?.map((el) => {
-            if (el._id !== item?._id) {
-                return el
-            }
-            else {
-                return newItem;
-            }
-        })
-        dispatch(setCartItems(newArray))
+            const newItem = { ...itemToChange, quantity: q - 1, subTotal: tp };
+            const newArray = amcitems?.map((el) => {
+                if (el._id !== item?._id) {
+                    return el
+                }
+                else {
+                    return newItem;
+                }
+            })
+            dispatch(setAmcItems(newArray))
+        }
+        else {
+            let itemToChange;
+            let q;
+            cartitems.length > 0 && cartitems.map((el) => {
+                if (el._id === item._id) {
+                    itemToChange = el;
+                    q = el.quantity;
+                }
+            })
+            const tp = itemToChange.priceSale * (q - 1)
+
+            const newItem = { ...itemToChange, quantity: q - 1, subTotal: tp };
+            const newArray = cartitems?.map((el) => {
+                if (el._id !== item?._id) {
+                    return el
+                }
+                else {
+                    return newItem;
+                }
+            })
+            dispatch(setCartItems(newArray))
+        }
     }
 
     const handleRemoveCartiem = () => {
-        const newArray = cartitems?.filter((el) => {
-            if (el._id !== item?._id) {
-                return el;
-            }
-        });
-        dispatch(setCartItems(newArray));
-        toast.success("Item Removed from the cart.")
+        if (item?.producttype === "amc") {
+            const newArray = amcitems?.filter((el) => {
+                if (el._id !== item._id) {
+                    return el;
+                }
+            });
+            dispatch(setAmcItems(newArray));
+            toast.success("Item Removed from the cart.")
+        }
+        else {
+            const newArray = cartitems?.filter((el) => {
+                if (el._id !== item._id) {
+                    return el;
+                }
+            });
+            dispatch(setCartItems(newArray));
+            toast.success("Item Removed from the cart.")
+        }
     }
 
 

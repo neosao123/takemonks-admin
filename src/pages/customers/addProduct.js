@@ -14,10 +14,14 @@ import { useQuery } from "react-query";
 import * as api from "src/services";
 import { useTranslation } from "react-i18next";
 import { AddProductForm } from "src/components/forms/user";
+import { AddAmc } from "src/components/forms/user";
+import Typography from "src/theme/overrides/Typography";
+import { Box, Button } from "@mui/material";
 
 
 export default function Create() {
     const { t } = useTranslation("user");
+    const [tab, setTab] = useState("products");
 
     const { data, isLoading } = useQuery("categories", api.getAllSubCategories, {
         onError: (err) => {
@@ -33,19 +37,26 @@ export default function Create() {
                     heading="Product List"
                     links={[
                         { name: t("dashboard"), href: "/" },
-                        { name: t("customers"), href: "/customers" },
-                        { name: t("addproduct") },
+                        { name: t("orders"), href: "/orders" },
+                        { name: t("Add Product/AMC") },
                     ]}
                     action={{
-                        href: `/users/cart`,
-                        title: t("View Cart")
+                        href: `/cart`,
+                        title: t("Cart")
                     }}
                 />
             </Toolbar>
-            <AddProductForm
+            <Box sx={{ display: "flex", gap: "20px", marginBottom: "10px" }}>
+                <Button onClick={() => setTab("products")}>Products</Button>
+                <Button onClick={() => setTab("AMC")}>AMC</Button>
+            </Box>
+            {tab==="products" && <AddProductForm
                 isLoading={isLoading}
                 categories={isLoading ? [] : data?.data}
-            />
+            />}
+            {
+                tab==="AMC" && <AddAmc/>
+            }
         </Page>
     );
 }
