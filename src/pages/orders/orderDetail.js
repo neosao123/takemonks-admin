@@ -32,7 +32,6 @@ import {
   SelectOrderStatus,
   Page,
   Toolbar,
-  ordertrackNumber
 } from "src/components";
 // import { InvoiceToolbar } from "src/components/invoice";
 // api
@@ -40,12 +39,11 @@ import * as api from "src/services";
 
 // utils
 import { fCurrency } from "src/utils/formatNumber";
-import DeliveryPartnerAndOrderTrackingNumber from "src/components/_dashboard/orders/DeliveryPartnerAndOrderTrackingNumber";
 import { useState } from "react";
 import { useEffect } from "react";
 // ----------------------------------------------------------------------
 export default function OrderDetail() {
-  const [open, setOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
   const { t } = useTranslation("order");
@@ -77,14 +75,14 @@ export default function OrderDetail() {
     },
   });
 
+  const handleOpen = () => {
+    setOpenModal(true)
+  }
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  useEffect(() => {
-    if (data?.status === "shipped" && !data?.deliveryPartner === "" && !data?.ordertrackingNumber === "") {
-      handleOpen()
-    }
-  }, [])
+  const handleClose = () => {
+    setOpenModal(false)
+  }
+
   const isLoading = orderLoading || deleteLoading;
   return (
     <Page title={`Order Details | ${process.env.REACT_APP_DOMAIN_NAME}`}>
@@ -108,16 +106,7 @@ export default function OrderDetail() {
           action={
             <>
               <Box mb={{ sm: 0, xs: 2 }}>
-                {/* <LoadingButton
-                  variant="contained"
-                  startIcon={<DeleteOutlineRoundedIcon />}
-                  onClick={() => mutate(data?._id)}
-                  loading={deleteLoading}
-                  loadingPosition="start"
-                >
-                  {t("delete")}
-                </LoadingButton> */}
-                <SelectOrderStatus data={data} />
+                <SelectOrderStatus data={data} handleOpen={handleOpen} />
               </Box>
             </>
           }
@@ -253,7 +242,6 @@ export default function OrderDetail() {
         </Table>
         {/* </Card> */}
       </Card>
-      {/* <DeliveryPartnerAndOrderTrackingNumber open={open} setOpen={setOpen} handleClose={handleClose} /> */}
     </Page>
   );
 }

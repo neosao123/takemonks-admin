@@ -25,12 +25,11 @@ export default function CustomTable({ ...props }) {
     hiddenPagination,
     ...rest
   } = props;
-
   const Component = row;
   const CardComponent = mobileRow;
   return (
     <>
-      {!isLoading && data?.data.length === 0 ? (
+      {!isLoading && data?.data?.length === 0 ? (
         <NotData />
       ) : (
         <>
@@ -42,7 +41,7 @@ export default function CustomTable({ ...props }) {
                   {(isLoading
                     ? Array.from(new Array(rows || 6))
                     : data?.data
-                  ).map((item) => {
+                  )?.map((item) => {
                     return (
                       <Component
                         key={Math.random()}

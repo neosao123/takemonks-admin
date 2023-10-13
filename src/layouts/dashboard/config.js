@@ -70,6 +70,12 @@ const sidebarConfig = [
     ],
   },
   {
+    title: "AMC Request",
+    path: "/amcrequest",
+    icon: <Icon icon="ant-design:dashboard-outlined" />,
+    isSearch: false,
+  },
+  {
     title: "orders",
     path: "/orders",
     icon: <Icon icon="bi:cart-check" />,

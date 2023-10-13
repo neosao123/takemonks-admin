@@ -319,3 +319,10 @@ export const placeOrder = async (obj) => {
   const res = await http.post("/orders", obj);
   return res
 }
+
+
+//export 
+export const AMCRequestList = async () => {
+  const res = await http.get("/admin/amcwithorder")
+  return res;
+}

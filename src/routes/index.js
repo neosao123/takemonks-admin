@@ -101,7 +101,10 @@ export default function Router() {
 
         //cart
         { path: "/addproducts", element: <AddProductForCustomer /> },
-        { path: "/cart", element: <Cart /> }
+        { path: "/cart", element: <Cart /> },
+
+        //amcrequest
+        { path: "/amcrequest", element: <AMCRequest /> }
       ],
     },
     {
@@ -221,4 +224,7 @@ const CustomerProfile = Loadable(lazy(() => import("src/pages/customers/profile"
 const AddProductForCustomer = Loadable(lazy(() => import("src/pages/customers/addProduct")));
 
 //cart
-const Cart = Loadable(lazy(() => import("src/pages/cart")))
+const Cart = Loadable(lazy(() => import("src/pages/cart")));
+
+//AMC REQUEST
+const AMCRequest = Loadable(lazy(() => import("src/pages/amcorequest")))

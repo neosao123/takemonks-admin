@@ -48,6 +48,18 @@ export default function AddShippingAddress() {
         }
     }
     const Checkout = async () => {
+        if (cartItems?.length === 0 && amcsItems?.length === 0) {
+            toast.error("Cart is empty you can't place order");
+            return
+        }
+        else if (customer === null) {
+            toast.error("Please select customer")
+            return
+        }
+        else if (address === "" || city === "" || state === "" || country === "" || phone === "" || zip === "" || billingAddressField == "" || billingCity === "" || billingCountry === "" || billingState === "" || billingZip === "") {
+            toast.error("Please fill all the shipping and billing fields.")
+            return
+        }
         const newCartitems = cartItems?.map((el) => {
             let obj = {
                 _id: el._id,
@@ -67,8 +79,6 @@ export default function AddShippingAddress() {
             }
             return obj;
         })
-
-        console.log("cartitems:", newCartitems)
 
         let obj = {
             paymentMethod: "COD",

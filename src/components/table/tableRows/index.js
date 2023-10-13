@@ -9,4 +9,5 @@ export { default as HomeSliderRow } from "./homeSliderRow";
 export { default as BrandRow } from "./brandRow";
 export { default as AmcRow } from "./amcRow";
 export { default as CustomerRow } from "./customerRow";
-export { default as CartRow } from "./cartRow"
+export { default as CartRow } from "./cartRow";
+export { default as AMCwithOrderRow } from "./amcwithorderRow";

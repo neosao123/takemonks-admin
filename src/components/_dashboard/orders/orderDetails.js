@@ -14,6 +14,7 @@ import Person4RoundedIcon from "@mui/icons-material/Person4Rounded";
 import LocalShippingRoundedIcon from "@mui/icons-material/LocalShippingRounded";
 import CreditCardRoundedIcon from "@mui/icons-material/CreditCardRounded";
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import { useTranslation } from "react-i18next";
 
 export default function Details({ data, isLoading }) {
@@ -267,8 +268,8 @@ export default function Details({ data, isLoading }) {
                 ) : (
                   <>
                     <Typography variant="body2">
-                      <strong>{t("address")}</strong>: {user?.address} {user?.zip},{" "}
-                      {user?.city} {user?.state}, {user?.country}
+                      <strong>{t("address")}</strong>: {user?.billingAddressField} {user?.billingZip},{" "}
+                      {user?.billingCity} {user?.billingState}, {user?.billingCountry}
                     </Typography>
                     <Typography variant="body2">
                       <strong>{t("order-date")}</strong>:{" "}
@@ -285,6 +286,66 @@ export default function Details({ data, isLoading }) {
               </Stack>
             </CardContent>
           </Card>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          {data?.deliveryPartner && <Card sx={{ minHeight: 226 }}>
+            <CardContent>
+              <Stack
+                spacing={2}
+                direction="row"
+                justifyContent="flex-start"
+                alignItems="center"
+              >
+                {isLoading ? (
+                  <>
+                    <Skeleton variant="rect" width={50} height={50} />
+                    <Skeleton variant="text" width={150} />
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      sx={{
+                        display: "block",
+                        minWidth: 50,
+                        lineHeight: 0,
+                        minHeight: 50,
+                        color: "text.primary",
+                        background: (theme) =>
+                          alpha(theme.palette.primary.main, 0.3),
+                        path: {
+                          stroke: (theme) => theme.palette.text.primary,
+                        },
+                      }}
+                      variant="contained"
+                      color="primary"
+                    >
+                      <InfoRoundedIcon />
+                    </Button>
+                    <Typography variant="h6">{t("Order Tracking Details")}</Typography>
+                  </>
+                )}
+              </Stack>
+              <Stack spacing={isLoading ? 0 : 1} sx={{ mt: 3 }}>
+                {isLoading ? (
+                  <>
+                    <Skeleton variant="text" width={200} />
+                    <Skeleton variant="text" width={200} />
+                    <Skeleton variant="text" width={200} />
+                  </>
+                ) : (
+                  <>
+                    <Typography variant="body2">
+                      <strong>{t("Delivery Partener")}</strong>: {data?.deliveryPartner || "  N/A"}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>{t("Tracking Number")}</strong>:{" "}
+                      {data?.ordertrackingNumber || "  N/A"}
+                    </Typography>
+                  </>
+                )}
+              </Stack>
+            </CardContent>
+          </Card>}
         </Grid>
       </Grid>
     </Stack>
