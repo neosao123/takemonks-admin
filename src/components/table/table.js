@@ -57,7 +57,7 @@ export default function CustomTable({ ...props }) {
           </Card>
           {mobileRow && (
             <Box sx={{ display: { sm: "none", xs: "block" } }}>
-              {(isLoading ? Array.from(new Array(6)) : data.data).map((row) => (
+              {(isLoading ? Array.from(new Array(6)) : data?.data).map((row) => (
                 <CardComponent
                   key={Math.random()}
                   item={row}

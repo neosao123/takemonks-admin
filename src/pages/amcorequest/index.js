@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import {
     HeaderBreadcrumbs,
     Toolbar,
-    UserCard,
+    OrderWithAmcCard,
     Table,
     AMCwithOrderRow,
     Page,
@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next";
 const TABLE_HEAD = [
     { id: "order", label: "Order No.", sort: true },
     { id: "customer", label: "Customer", sort: true },
+    { id: "customer", label: "AMC", sort: true },
     { id: "orderdate", label: "Order Date" },
     { id: "duration", label: "Duration", sort: true },
     { id: "serial", label: "Serial No.", alignRight: false },
@@ -68,7 +69,7 @@ export default function AMCRequest() {
                     data={data?.data}
                     isLoading={isLoading}
                     row={AMCwithOrderRow}
-                    mobileRow={UserCard}
+                    mobileRow={OrderWithAmcCard}
                 />
             </Page>
         </>

@@ -9,17 +9,23 @@ import {
   Box,
   Stack,
   Link,
+  Tooltip,
+  IconButton,
+  Button,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import { Label } from "src/components";
 import { fDateShort } from "src/utils/formatTime";
 import { capitalize } from "lodash";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 // import { Lable, Popover } from "src/components";
 // import Icon from "src/utils/icon";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import DateRangeRoundedIcon from "@mui/icons-material/DateRangeRounded";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { fCurrency } from "src/utils/formatNumber";
+import LockIcon from "@mui/icons-material/Lock";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 const RootStyle = styled(Paper)(({ theme }) => ({
   padding: "10px 10px 10px 16px",
   marginBottom: "0.5rem",
@@ -67,22 +73,22 @@ const RootStyle = styled(Paper)(({ theme }) => ({
   },
 }));
 
-export default function AgendaCodeMobile({ item, isLoading }) {
+export default function AgendaCodeMobile({ item, isLoading, handleClickOpen }) {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <RootStyle
       sx={{
-        borderLeft: `6px solid ${
-          isLoading
-            ? theme.palette.divider
-            : theme.palette[
-                (item?.status === "delivered" && "success") ||
-                  (item?.status === "ontheway" && "warning") ||
-                  (item?.status === "pending" && "info") ||
-                  "error"
-              ].main
-        }`,
+        borderLeft: `6px solid ${isLoading
+          ? theme.palette.divider
+          : theme.palette[
+            (item?.status === "delivered" && "success") ||
+            (item?.status === "ontheway" && "warning") ||
+            (item?.status === "pending" && "info") ||
+            "error"
+          ].main
+          }`,
       }}
       key={uniqueId()}
     >
@@ -135,7 +141,7 @@ export default function AgendaCodeMobile({ item, isLoading }) {
             {isLoading ? (
               <Skeleton variant="text" width={50} sx={{ ml: "auto" }} />
             ) : (
-              fCurrency(Number(item?.total)).slice(0, -3)
+              fCurrency(Number(item?.total))
             )}
           </Typography>
           <Box className="phone-container">
@@ -154,6 +160,35 @@ export default function AgendaCodeMobile({ item, isLoading }) {
                 {capitalize(item?.status)}
               </Label>
             )}
+          </Box>
+        </Grid>
+        <Grid item xs={12} >
+          <Box sx={
+            {
+              display: "flex",
+              justifyContent: "space-between"
+            }
+          }>
+            <Stack direction="row" justifyContent="flex-end">
+              {" "}
+              {isLoading ? (
+                <Skeleton
+                  variant="circular"
+                  width={34}
+                  height={34}
+                  sx={{ mr: 1 }}
+                />
+              ) : (
+                <Tooltip title="Preview">
+                  <IconButton onClick={() => navigate(`/orders/${item._id}`)}>
+                    <RemoveRedEyeIcon />
+                  </IconButton>
+                </Tooltip>
+              )}{" "}
+            </Stack>{" "}
+            <Box sx={{ display: "flex", justifyContent: "right" }}>
+              <Button disabled={item?.status !== "delivered"} variant="contained">Send Mail</Button>
+            </Box>
           </Box>
         </Grid>
       </Grid>

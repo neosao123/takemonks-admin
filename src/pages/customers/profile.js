@@ -18,10 +18,12 @@ import { useTranslation } from "react-i18next";
 
 const TABLE_HEAD = [
     { id: "name", label: "product", alignRight: false },
+    { id: "name", label: "phone", alignRight: false },
     { id: "createdAt", label: "created-at", alignRight: false, sort: true },
     { id: "inventoryType", label: "status", alignRight: false, sort: true },
     { id: "price", label: "price", alignRight: false, sort: true },
     { id: "quantity", label: "quantity", alignRight: false },
+    { id: "name", label: "view", alignRight: false },
     { id: "", label: "actions", alignRight: true },
 ];
 export default function UserProfile() {

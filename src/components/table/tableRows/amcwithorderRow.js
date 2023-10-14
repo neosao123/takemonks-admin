@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // material
 import { useTheme, styled } from "@mui/material/styles";
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment"
+import * as api from "src/services";
 import {
     Box,
     TableRow,
@@ -18,6 +19,7 @@ import {
     Button,
     Modal,
     TextField,
+    TextareaAutosize,
 } from "@mui/material";
 // components
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -26,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import { fDateTime } from "src/utils/formatTime";
 import { ar, enUS } from "date-fns/locale";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 
 
 console.log(new Date().getFullYear() + 1)
@@ -35,7 +38,7 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 500,
+    width: 400,
     bgcolor: 'background.paper',
     // border: '2px solid #000',
     boxShadow: 24,
@@ -65,6 +68,80 @@ export default function OrderRow({ isLoading, row, isUser }) {
     const [openRejectModal, setRejectModal] = useState(false);
     const handleOpenReject = () => setRejectModal(true);
     const handleCloseReject = () => setRejectModal(false);
+    const [expiryDate, setExpiryDate] = useState("");
+    const [RejectionMessage, setRejectionMessage] = useState("");
+    const [orderId, setOrderId] = useState("");
+    const [serialKeyValue, setSerialKeyValue] = useState("");
+    const [AMCtitle, setAmcTitle] = useState("");
+    const [email, setEmail] = useState("");
+
+    function calculateExpiryDate(duration, unit) {
+        const created = new Date();
+        let expiry = new Date(created);
+
+        switch (unit) {
+            case "yearly":
+                expiry.setDate(created.getDate() + duration * 365);
+                setExpiryDate(expiry);
+                break;
+            case "monthly":
+                expiry.setDate(created.getDate() + duration * 30);
+                setExpiryDate(expiry);
+                break;
+            default:
+                return null;
+        }
+        setExpiryDate(expiry)
+        return expiry;
+    }
+
+    const handleAprooveRequest = async (id) => {
+        try {
+            api.AMCRequestListAprooval(id, { status: "aprooved", amcExpriry: expiryDate, orderId, serialKeyValue, AMCtitle, email })
+                .then((res) => {
+                    if (res.success === true) {
+                        handleCloseAproove()
+                        toast.success("Request Aprooved successfully");
+                        window.location.reload(false)
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        } catch (error) {
+            toast.error("Something went wrong while aprooving request.")
+        }
+    }
+
+    const handleRejectRequest = async (id) => {
+        if (RejectionMessage == "" || RejectionMessage.length < 20) {
+            toast.error("Please write Rejection message with minimum 20 characters");
+            return;
+        }
+        try {
+            api.AMCRequestListAprooval(id, { status: "rejected", amcExpriry: "", message: RejectionMessage, orderId, serialKeyValue, AMCtitle, email })
+                .then((res) => {
+                    if (res.success === true) {
+                        handleCloseReject()
+                        toast.success("Request Rejected successfully");
+                        window.location.reload(false)
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        } catch (error) {
+            toast.error("Something went wrong while aprooving request.")
+        }
+    }
+
+    useEffect(() => {
+        setAmcTitle(row?.amcId?.title);
+        setOrderId(row?.orderId?._id);
+        setSerialKeyValue(row?.serialKey);
+        setEmail(row?.orderId?.user?.email)
+    }, [])
+
     return (
         <>
             <TableRow hover key={Math.random()}>
@@ -90,7 +167,17 @@ export default function OrderRow({ isLoading, row, isUser }) {
                     {isLoading ? (
                         <Skeleton variant="text" />
                     ) : (
-                        <> {row?.orderId?.user?.fullName} </>
+                        <> {row?.orderId?.user?.fullName?.slice(0, 15)} </>
+                    )}{" "}
+                </TableCell>{" "}
+                <TableCell>
+                    {" "}
+                    {isLoading ? (
+                        <Skeleton variant="text" />
+                    ) : (
+                        <Typography>
+                            {row?.amcId?.title?.slice(0, 10)}
+                        </Typography>
                     )}{" "}
                 </TableCell>{" "}
                 <TableCell>
@@ -104,12 +191,12 @@ export default function OrderRow({ isLoading, row, isUser }) {
                 <TableCell>
                     {" "}
                     <Box sx={{ display: "flex", flexDirection: "column" }}>
-                        <Typography>
+                        {isLoading ? (<Skeleton variant="text" />) : <Typography>
                             Duration:{" "}{isLoading ? <Skeleton variant="text" /> : row?.duration}{" "}
-                        </Typography>
-                        <Typography>
-                            Perid:{" "}{isLoading ? <Skeleton variant="text" /> : row?.period}{" "}
-                        </Typography>
+                        </Typography>}
+                        {isLoading ? (<Skeleton variant="text" />) : <Typography>
+                            Period:{" "}{isLoading ? <Skeleton variant="text" /> : row?.period}{" "}
+                        </Typography>}
                     </Box>
                 </TableCell>
                 <TableCell>
@@ -121,7 +208,7 @@ export default function OrderRow({ isLoading, row, isUser }) {
                     {isLoading ? (
                         <Skeleton variant="text" />
                     ) : (
-                        <> {fDateTime(row?.createdAt, language !== "ar" ? enUS : ar)} </>
+                        <> {fDateTime(row?.appliedAt, language !== "ar" ? enUS : ar)} </>
                     )}{" "}
                 </TableCell>
                 <TableCell>
@@ -151,11 +238,14 @@ export default function OrderRow({ isLoading, row, isUser }) {
                 </TableCell>
                 <TableCell>
                     {row?.status === "pending" && (<Box>
-                        <IconButton color="success" onClick={handleOpenAproove}>
+                        <IconButton color="success" onClick={() => {
+                            calculateExpiryDate(row?.duration, row?.period)
+                            handleOpenAproove()
+                        }}>
                             <CheckRoundedIcon />
                         </IconButton>
                         <IconButton color="error">
-                            <ClearRoundedIcon onClick={handleOpenReject} />
+                            <ClearRoundedIcon onClick={() => handleOpenReject()} />
                         </IconButton>
                     </Box>)}
                 </TableCell>
@@ -176,8 +266,8 @@ export default function OrderRow({ isLoading, row, isUser }) {
                         <TextField fullWidth value={row?.orderId?._id} label="Order Id" aria-readonly />
                         <TextField fullWidth label="Seriral Key" value={row?.serialKey} aria-readonly />
                         <TextField fullWidth label="AMC" value={row?.amcId?.title} aria-readonly />
-                        <TextField fullWidth label="Expiry Date" aria-readonly />
-                        <Button variant='contained'>submit</Button>
+                        <TextField fullWidth label="Expiry Date" value={expiryDate} aria-readonly />
+                        <Button variant='contained' onClick={() => handleAprooveRequest(row?._id)}>submit</Button>
                     </Box>
                 </Modal>
             </div>
@@ -197,8 +287,8 @@ export default function OrderRow({ isLoading, row, isUser }) {
                         <TextField fullWidth value={row?.orderId?._id} label="Order Id" aria-readonly />
                         <TextField fullWidth label="Seriral Key" value={row?.serialKey} aria-readonly />
                         <TextField fullWidth label="AMC" value={row?.amcId?.title} aria-readonly />
-                        <TextField minRows={5} maxRows={5} fullWidth label="Message" required />
-                        <Button variant='contained'>submit</Button>
+                        <TextareaAutosize minRows={4} required fullWidth placeholder="Message" onChange={(e) => setRejectionMessage(e.target.value)} maxRows={4} style={{ fontSize: "1rem", fontFamily: 'Poppins', padding: "10px", border: "2px solid #edeff1" }} aria-required variant="outlined" />
+                        <Button variant='contained' onClick={() => handleRejectRequest(row?._id)}>submit</Button>
                     </Box>
                 </Modal>
             </div>

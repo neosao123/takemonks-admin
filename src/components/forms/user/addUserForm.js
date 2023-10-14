@@ -25,7 +25,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const { GENDER } = configData;
+const { GENDER, ROLE } = configData;
 
 export default function AddUserForm() {
     const navigate = useNavigate();
@@ -33,7 +33,7 @@ export default function AddUserForm() {
     const [state, setstate] = useState({
         loading: false,
     });
-    const { mutate, isLoading } = useMutation("new", api.addUser, {
+    const { mutate, isLoading } = useMutation("new", api.addClient, {
         onSuccess: () => {
             toast.success("New User Added");
             navigate("/users");
@@ -50,6 +50,7 @@ export default function AddUserForm() {
         email: Yup.string().required(t("email-is-required")),
         phone: Yup.string().required(t("phone-is-required")),
         gender: Yup.string().required(t("gender-is-required")),
+        role: Yup.string().required(t("gender-is-required")),
     });
 
     const formik = useFormik({
@@ -62,6 +63,7 @@ export default function AddUserForm() {
             gender: "",
             cover: null,
             file: "",
+            role: ""
         },
         validationSchema: NewUserSchema,
         onSubmit: async (values) => {
@@ -142,7 +144,7 @@ export default function AddUserForm() {
                                             />
                                         </FormControl>
                                     </Grid>
-                                    
+
                                     <Grid item xs={12} md={6} lg={6}>
                                         <FormControl fullWidth>
                                             <LabelStyle>{t("last-name")}</LabelStyle>
@@ -154,7 +156,7 @@ export default function AddUserForm() {
                                             />
                                         </FormControl>
                                     </Grid>
-                                    
+
                                     <Grid item xs={12} md={6} lg={6}>
                                         <FormControl fullWidth>
                                             <LabelStyle>{t("user-email")}</LabelStyle>
@@ -177,8 +179,8 @@ export default function AddUserForm() {
                                                 helperText={touched.phone && errors.phone}
                                             />
                                         </FormControl>
-                                    </Grid> 
-                                    
+                                    </Grid>
+
                                     <Grid item xs={12} md={6} lg={6}>
                                         <FormControl fullWidth>
                                             <LabelStyle>{t("gender")}</LabelStyle>
@@ -191,6 +193,29 @@ export default function AddUserForm() {
                                                 {GENDER?.map((gender) => (
                                                     <option key={gender} value={gender}>
                                                         {capitalCase(gender)}
+                                                    </option>
+                                                ))}
+                                            </Select>
+                                            {touched.gender && errors.gender && (
+                                                <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                                                    {touched.gender && errors.gender}
+                                                </FormHelperText>
+                                            )}
+                                        </FormControl>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6} lg={6}>
+                                        <FormControl fullWidth>
+                                            <LabelStyle>{t("role")}</LabelStyle>
+                                            <Select
+                                                native
+                                                {...getFieldProps("role")}
+                                                error={Boolean(touched.role && errors.role)}
+                                            >
+                                                <option value="" style={{ display: "none" }} />
+                                                {ROLE?.map((role) => (
+                                                    <option key={role} value={role}>
+                                                        {capitalCase(role)}
                                                     </option>
                                                 ))}
                                             </Select>

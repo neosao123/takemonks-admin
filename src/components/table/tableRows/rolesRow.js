@@ -12,9 +12,9 @@ import {
   Tooltip
 } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import { capitalize } from "lodash";
 import { fDateShort } from "src/utils/formatTime";
-import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import { ar, enUS } from "date-fns/locale";
 import { useTranslation } from "react-i18next";
 

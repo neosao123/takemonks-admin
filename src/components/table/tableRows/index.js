@@ -11,3 +11,4 @@ export { default as AmcRow } from "./amcRow";
 export { default as CustomerRow } from "./customerRow";
 export { default as CartRow } from "./cartRow";
 export { default as AMCwithOrderRow } from "./amcwithorderRow";
+export { default as clientRow } from "./clientRow"

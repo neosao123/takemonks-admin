@@ -115,11 +115,6 @@ export default function UserRow({ isLoading, row }) {
                   <RemoveRedEyeIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Add Product">
-                <IconButton onClick={() => navigate(`/users/${row?._id}/addproduct`)}>
-                  <AddShoppingCartIcon />
-                </IconButton>
-              </Tooltip>
               <Tooltip title="Delete">
                 <IconButton onClick={() => navigate(`/users/${row?._id}`)}>
                   <DeleteRoundedIcon />

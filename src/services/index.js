@@ -37,7 +37,17 @@ export const getUsers = async (page, search) => {
   return response;
 };
 
-// Add user field
+// Add user field admin/clients
+export const addClient = async (payload) => {
+  const { data: response } = await http.post(`/admin/clients`, payload);
+  return response;
+};
+//edit admin/client
+export const EditClient = async (id, payload) => {
+  const res = await http.put(`/admin/clients/${id}`, payload);
+  return res;
+}
+
 export const addUser = async (payload) => {
   const { data: response } = await http.post(`/admin/users`, payload);
   return response;
@@ -325,4 +335,18 @@ export const placeOrder = async (obj) => {
 export const AMCRequestList = async () => {
   const res = await http.get("/admin/amcwithorder")
   return res;
+}
+
+
+//amc aprooval
+
+export const AMCRequestListAprooval = async (id, obj) => {
+  const { data } = await http.put(`/admin/amcwithorder/${id}`, obj)
+  return data;
+}
+
+//clients
+export const GetAdminUsers = async () => {
+  const { data } = await http.get(`/admin/clients`)
+  return data;
 }
